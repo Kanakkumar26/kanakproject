@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple 3D Website</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        body { margin: 0; overflow: hidden; text-align: center; font-family: Arial, sans-serif; color: white; }
+        canvas { display: block; }
+        #title {
+            position: absolute;
+            top: 20px;
+            width: 100%;
+            font-size: 2em;
+            font-weight: bold;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div id="title">Welcome to the 3D Flower & Butterfly Animation</div>
+    <script>
+        // Create scene
+        const scene = new THREE.Scene();
+        
+        // Add fog effect for depth
+        scene.fog = new THREE.Fog(0x111122, 5, 20);
+
+        // Create animated flower-like background
+        const flowerParticles = [];
+        const particleGeometry = new THREE.CircleGeometry(0.2, 8);
+        const particleMaterial = new THREE.MeshBasicMaterial({ color: 0xff69b4, transparent: true, opacity: 0.8 });
+
+        for (let i = 0; i < 150; i++) { // More particles
+            const particle = new THREE.Mesh(particleGeometry, particleMaterial);
+            particle.position.set((Math.random() - 0.5) * 20, (Math.random() - 0.5) * 20, Math.random() * -10);
+            particle.userData.velocity = Math.random() * 0.01 + 0.005; 
+            scene.add(particle);
+            flowerParticles.push(particle);
+        }
+
+        let time = 0;
+        function animateFlowers() {
+            time += 0.02;
+            flowerParticles.forEach((particle, index) => {
+                const waveSpeed = 0.015;
+                const waveSize = 0.3;
+                particle.position.y += waveSize * Math.sin(time + index * 0.1);
+                particle.position.x += waveSpeed * Math.cos(time + index * 0.2);
+                particle.position.z += waveSpeed * Math.sin(time + index * 0.15);
+                if (particle.position.y > 10) {
+                    particle.position.y = -10;
+                }
+            });
+        }
+
+        // Create butterflies
+        const butterflies = [];
+        const butterflyGeometry = new THREE.PlaneGeometry(0.5, 0.3);
+        const butterflyMaterial = new THREE.MeshBasicMaterial({ color: 0xFFD700, side: THREE.DoubleSide });
+
+        for (let i = 0; i < 50; i++) { // More butterflies
+            const butterfly = new THREE.Mesh(butterflyGeometry, butterflyMaterial);
+            butterfly.position.set((Math.random() - 0.5) * 15, (Math.random() - 0.5) * 15, Math.random() * -5);
+            butterfly.userData.velocity = Math.random() * 0.02 + 0.01;
+            scene.add(butterfly);
+            butterflies.push(butterfly);
+        }
+
+        function animateButterflies() {
+            butterflies.forEach((butterfly, index) => {
+                butterfly.position.y += Math.sin(time * 2 + index) * 0.02;
+                butterfly.position.x += Math.cos(time * 2 + index) * 0.01;
+                butterfly.rotation.y = Math.sin(time * 3 + index) * 0.2;
+                butterfly.rotation.x = Math.cos(time * 3 + index) * 0.1;
+            });
+        }
+
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // Create a glowing, color-changing cube
+        const geometry = new THREE.BoxGeometry();
+        const material = new THREE.MeshBasicMaterial({ color: 0x00FF00 });
+        const cube = new THREE.Mesh(geometry, material);
+        scene.add(cube);
+
+        // Add cube glow effect
+        const glowMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00, transparent: true, opacity: 0.4 });
+        const glowCube = new THREE.Mesh(geometry.clone().scale(1.2, 1.2, 1.2), glowMaterial);
+        scene.add(glowCube);
+
+        camera.position.z = 5;
+
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+            animateFlowers();
+            animateButterflies();
+            cube.rotation.x += 0.002;
+            cube.rotation.y += 0.002;
+            glowCube.rotation.x = cube.rotation.x;
+            glowCube.rotation.y = cube.rotation.y;
+            cube.material.color.setHSL((performance.now() / 2000) % 1, 1, 0.5);
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Resize handler
+        window.addEventListener('resize', () => {
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+        });
+    </script>
+</body>
+</html>

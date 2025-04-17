@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Python Runner</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: monospace;
+      display: flex;
+      height: 100vh;
+      background-color: #121212;
+      color: #eee;
+    }
+
+    .editor, .output {
+      flex: 1;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    .editor {
+      background: #1e1e1e;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .output {
+      background: #2c2c2c;
+      border-left: 2px solid #444;
+      white-space: pre-wrap;
+      overflow-y: auto;
+    }
+
+    textarea {
+      flex-grow: 1;
+      width: 100%;
+      background: #1e1e1e;
+      color: #eee;
+      border: 1px solid #444;
+      resize: none;
+      font-size: 16px;
+      padding: 10px;
+      box-sizing: border-box;
+    }
+
+    button {
+      background: #03a9f4;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      cursor: pointer;
+      font-weight: bold;
+      border-radius: 5px;
+      margin-top: 10px;
+      width: fit-content;
+    }
+
+    button:hover {
+      background: #0288d1;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="editor">
+    <h3>Python Code</h3>
+    <textarea id="code">print("Hello from Python!")</textarea>
+    <button id="runButton">▶ Run Code</button>
+  </div>
+
+  <div class="output">
+    <h3>Output</h3>
+    <div id="outputArea"></div>
+  </div>
+
+  <!-- Skulpt Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/skulpt.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/skulpt-stdlib.js"></script>
+
+  <script>
+    document.getElementById("runButton").addEventListener("click", function () {
+      const code = document.getElementById("code").value;
+      const output = document.getElementById("outputArea");
+      output.innerHTML = ""; // clear output
+
+      function builtinRead(x) {
+        if (Sk.builtinFiles === undefined || Sk.builtinFiles["files"][x] === undefined) {
+          throw "File not found: '" + x + "'";
+        }
+        return Sk.builtinFiles["files"][x];
+      }
+
+      Sk.configure({
+        output: function(text) {
+          output.innerHTML += text;
+        },
+        read: builtinRead
+      });
+
+      Sk.misceval.asyncToPromise(() => {
+        return Sk.importMainWithBody("<stdin>", false, code);
+      }).catch((err) => {
+        output.innerHTML = `<span style="color:red;">${err.toString()}</span>`;
+      });
+    });
+  </script>
+
+</body>
+</html>

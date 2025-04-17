@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+<video id="cam" autoplay></video>
+
+<script>
+  function startCamera() {
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then(function (stream) {
+        document.getElementById("cam").srcObject = stream;
+      })
+      .catch(function (error) {
+        alert("Camera error: ", error);
+      });
+  }
+  startCamera();
+
+</script>
+
+
+</body>
+</html>

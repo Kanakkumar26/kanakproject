@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Python Shell in Browser</title>
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: monospace;
+      background-color: #000;
+      color: #0f0;
+    }
+
+    .container {
+      display: flex;
+      height: 100vh;
+    }
+
+    .editor, .output {
+      flex: 1;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      overflow: auto;
+    }
+
+    .editor {
+      background: #111;
+      border-right: 2px solid #333;
+    }
+
+    textarea {
+      flex: 1;
+      resize: vertical;
+      background: #111;
+      color: #0f0;
+      border: 1px solid #333;
+      border-radius: 5px;
+      padding: 10px;
+      font-size: 16px;
+    }
+
+    button {
+      margin-top: 10px;
+      padding: 10px;
+      background-color: #0f0;
+      color: #000;
+      font-weight: bold;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .output {
+      background-color: #000;
+      border-left: 2px solid #333;
+    }
+
+    .shell {
+      flex: 1;
+      background: #000;
+      color: #0f0;
+      padding: 10px;
+      font-size: 16px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      border-radius: 5px;
+      line-height: 1.4;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="editor">
+      <textarea id="pythonCode">
+def check_password_strength(password):
+    length = len(password)
+    if length < 6:
+        return "Weak"
+    elif 6 <= length <= 10:
+        return "Medium"
+    else:
+        return "Strong"
+
+password = input("Enter your password: ")
+strength = check_password_strength(password)
+print(f"Password strength: {strength}")
+
+      </textarea>
+      <button onclick="runPython()">▶ Run Code</button>
+    </div>
+    <div class="output">
+      <div class="shell" id="output">>>> Ready for Python code...\n</div>
+    </div>
+  </div>
+
+  <script>
+    let pyodideReady = false;
+    let pyodide;
+
+    async function loadPyodideAndPackages() {
+      pyodide = await loadPyodide();
+      pyodideReady = true;
+      const output = document.getElementById("output");
+      output.textContent += "✅ Python loaded.\n";
+    }
+
+    async function runPython() {
+      const code = document.getElementById("pythonCode").value;
+      const output = document.getElementById("output");
+
+      if (!pyodideReady) {
+        output.textContent += "⏳ Python still loading...\n";
+        return;
+      }
+
+      output.textContent += ">>> " + code.trim().split('\n').join('\n... ') + '\n';
+
+      try {
+        let result = [];
+        pyodide.setStdout({ batched: (text) => result.push(text) });
+        pyodide.setStderr({ batched: (text) => result.push("❌ " + text) });
+
+        await pyodide.runPythonAsync(code);
+        output.textContent += result.join('') + "\n";
+        output.scrollTop = output.scrollHeight;
+      } catch (err) {
+        output.textContent += "❌ Exception:\n" + err + "\n";
+      }
+    }
+
+    loadPyodideAndPackages();
+  </script>
+</body>
+</html>

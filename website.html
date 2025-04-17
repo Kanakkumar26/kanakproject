@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clock - Analog & Digital</title>
+    <style type="text/css">
+        * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #0a0a0a;
+    font-family: 'Courier New', Courier, monospace;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    color: #fff;
+    overflow: hidden;
+    position: relative;
+}
+
+.background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, #0a0a0a, #2a2a2a, #444444);
+    background-size: 400% 400%;
+    animation: gradientMove 6s ease infinite;
+}
+
+@keyframes gradientMove {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.watch-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 800px;
+    height: 400px;
+    background-color: rgba(34, 34, 34, 0.8);
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+    padding: 40px;
+    text-align: center;
+    z-index: 2;
+}
+
+.analog-clock {
+    width: 250px;
+    height: 250px;
+    border-radius: 50%;
+    background: linear-gradient(145deg, #333, #111);
+    position: relative;
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.8);
+}
+
+.clock-face {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    transform: translate(-50%, -50%);
+    position: relative;
+}
+
+.hour-hand, .minute-hand, .second-hand {
+    position: absolute;
+    bottom: 50%;
+    left: 50%;
+    transform-origin: 50% 100%;
+    transition-timing-function: steps(1);
+}
+
+.hour-hand {
+    width: 6px;
+    height: 50px;
+    background: #fff;
+    border-radius: 6px;
+    transform: translateX(-50%) translateY(10px) rotate(90deg);
+}
+
+.minute-hand {
+    width: 4px;
+    height: 70px;
+    background: #aaa;
+    border-radius: 4px;
+    transform: translateX(-50%) translateY(10px);
+}
+
+.second-hand {
+    width: 2px;
+    height: 80px;
+    background: red;
+    border-radius: 2px;
+    transform: translateX(-50%) translateY(10px);
+}
+
+.digital-display {
+    font-size: 60px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    color: #00ff00;
+    background: linear-gradient(145deg, #2e2e2e, #0a0a0a);
+    border: 2px solid #0f0f0f;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 0 10px rgba(0, 255, 0, 0.6);
+    transform: rotateY(10deg);
+    animation: fadeIn 0.5s ease-in-out infinite alternate, glitch 1.5s infinite alternate;
+    margin-left: 30px;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0.5;
+        transform: rotateY(10deg);
+    }
+    100% {
+        opacity: 1;
+        transform: rotateY(0deg);
+    }
+}
+
+@keyframes glitch {
+    0% {
+        text-shadow: 2px 0 red, -2px 0 cyan;
+    }
+    50% {
+        text-shadow: -2px 0 red, 2px 0 cyan;
+    }
+    100% {
+        text-shadow: 2px 0 red, -2px 0 cyan;
+    }
+}
+
+#time {
+    display: inline-block;
+}
+
+    </style>
+</head>
+<body>
+    <div class="background"></div>
+    <div class="watch-container">
+        <!-- Analog clock section -->
+        <div class="analog-clock">
+            <div class="clock-face">
+                <div class="hour-hand"></div>
+                <div class="minute-hand"></div>
+                <div class="second-hand"></div>
+            </div>
+        </div>
+        
+        <!-- Digital clock section -->
+        <div class="digital-display">
+            <div class="time" id="time">00:00:00</div>
+        </div>
+    </div>
+</body>
+</html>
+<script type="text/javascript">
+    function updateClock() {
+    const hourHand = document.querySelector('.hour-hand');
+    const minuteHand = document.querySelector('.minute-hand');
+    const secondHand = document.querySelector('.second-hand');
+    const timeElement = document.getElementById('time');
+    
+    // Get current time
+    const now = new Date();
+    let hours = now.getHours();
+    let minutes = now.getMinutes();
+    let seconds = now.getSeconds();
+
+    // Format the time to always show two digits
+    hours = hours < 10 ? '0' + hours : hours;
+    minutes = minutes < 10 ? '0' + minutes : minutes;
+    seconds = seconds < 10 ? '0' + seconds : seconds;
+
+    // Set the digital clock time
+    timeElement.textContent = `${hours}:${minutes}:${seconds}`;
+
+    // Set the analog clock hands based on current time
+    const hourDeg = (360 / 12) * hours + (360 / 12) * (minutes / 60);
+    const minuteDeg = (360 / 60) * minutes + (360 / 60) * (seconds / 60);
+    const secondDeg = (360 / 60) * seconds;
+
+    hourHand.style.transform = `translateX(-50%) translateY(10px) rotate(${90 + hourDeg}deg)`;
+    minuteHand.style.transform = `translateX(-50%) translateY(10px) rotate(${90 + minuteDeg}deg)`;
+    secondHand.style.transform = `translateX(-50%) translateY(10px) rotate(${90 + secondDeg}deg)`;
+}
+
+// Update every second
+setInterval(updateClock, 1000);
+updateClock(); // Initial call to display the time immediately
+
+</script>

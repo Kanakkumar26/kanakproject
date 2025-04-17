@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title></title>
+</head>
+<body>
+    <script type="text/javascript">
+var operation = prompt("Choose an operation: add, sub, div, mul");
+var valueA = prompt("Enter Value of A:");
+var valueB = prompt("Enter Value of B:");
+
+var result;
+
+if (operation === 'add') {
+    result = Number(valueA) + Number(valueB);
+} else if (operation === 'sub') {
+    result = Number(valueA) - Number(valueB);
+} else if (operation === 'div') {
+    if (Number(valueB) !== 0) {
+        result = Number(valueA) / Number(valueB);
+    } else {
+        result = 'Cannot divide by zero';
+    }
+} else if (operation === 'mul') {
+    result = Number(valueA) * Number(valueB);
+} else {
+    result = 'Invalid operation';
+}
+
+// Output the result
+document.write("Result: " + result);
+    </script>
+</body>
+</html>

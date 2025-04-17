@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hacker GLITCH MODE</title>
+    <style>
+        body { margin: 0; overflow: hidden; background-color: black; color: lime; font-family: monospace; }
+        canvas { display: block; }
+        .glitch-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: black;
+            color: lime;
+            font-size: 30px;
+            font-weight: bold;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-shadow: 2px 2px red, -2px -2px blue;
+            animation: glitch 0.2s infinite alternate;
+            z-index: -1;
+        }
+        @keyframes glitch {
+            0% { transform: translate(2px, -2px); }
+            25% { transform: translate(-2px, 2px); }
+            50% { transform: translate(2px, 2px); }
+            75% { transform: translate(-2px, -2px); }
+            100% { transform: translate(2px, -2px); }
+        }
+        .details {
+            position: absolute;
+            width: 200px;
+            font-size: 18px;
+            color: lime;
+        }
+        .left { left: 20px; top: 50%; transform: translateY(-50%); text-align: left; }
+        .right { right: 20px; top: 50%; transform: translateY(-50%); text-align: right; }
+        .top-left { left: 20px; top: 20px; text-align: left; }
+        .top-right { right: 20px; top: 20px; text-align: right; }
+        
+        .map-container {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 2px solid lime;
+            background: rgba(0, 255, 0, 0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+        .radar {
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, transparent 50%, lime 100%);
+            border-radius: 50%;
+            animation: radar-sweep 3s linear infinite;
+        }
+        @keyframes radar-sweep {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="glitch-bg">Kanak Kumar</div>
+    <div class="details left">[ SYSTEM LOG ]<br>Accessing Data...<br>Connection Secure...</div>
+    <div class="details right">[ STATUS ]<br>Firewall: Bypassed<br>Encryption: Decrypted</div>
+    <div class="details top-left">[ NETWORK ]<br>IP: 192.168.1.1<br>Packets: 54321</div>
+    <div class="details top-right">[ USER ]<br>Access Level: Admin<br>Last Login: 03:14 AM</div>
+    
+    <div class="map-container">
+        <div class="radar"></div>
+    </div>
+    
+    <canvas id="matrix"></canvas>
+    <script>
+        const canvas = document.getElementById('matrix');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        
+        const binary = '1010101010101010';
+        const binaryArray = binary.split('');
+        const fontSize = 18;
+        const columns = canvas.width / fontSize;
+        const drops = Array.from({ length: columns }).map(() => 1);
+        
+        function drawMatrix() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'lime';
+            ctx.font = fontSize + 'px monospace';
+            
+            for (let i = 0; i < drops.length; i++) {
+                const text = binaryArray[Math.floor(Math.random() * binaryArray.length)];
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+        setInterval(drawMatrix, 50);
+    </script>
+</body>
+</html>

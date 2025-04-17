@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Kanak's HackShop</title>
+<style type="text/css">
+  body, html {
+  margin: 0;
+  padding: 0;
+  font-family: 'Courier New', monospace;
+  background-color: black;
+  color: #00ff00;
+  overflow-x: hidden;
+}
+
+canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -10;
+}
+
+.container {
+  padding: 40px;
+  max-width: 1000px;
+  margin: auto;
+}
+
+.typewriter {
+  font-size: 5rem;
+  text-align: center;
+  overflow: hidden;
+  white-space: nowrap;
+  border-right: .15em solid #00ff00;
+  animation: typing 3s steps(30, end), blink .75s step-end infinite;
+  margin-bottom: 40px;
+}
+
+@keyframes typing {
+  from { width: 0 }
+  to { width: 100% }
+}
+
+@keyframes blink {
+  from, to { border-color: transparent }
+  50% { border-color: #00ff00 }
+}
+
+.shop {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.item {
+  background: #111;
+  border: 1px solid #00ff00;
+  padding: 20px;
+  width: 250px;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 0 15px #00ff0055;
+  transition: transform 0.3s;
+}
+
+.item:hover {
+  transform: scale(1.05);
+}
+
+button {
+  background-color: #00ff00;
+  color: black;
+  font-weight: bold;
+  border: none;
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.cart {
+  margin-top: 50px;
+  background: #111;
+  padding: 20px;
+  border-radius: 10px;
+  border: 1px solid #00ff00;
+  box-shadow: 0 0 15px #00ff0055;
+}
+
+.cart ul {
+  list-style: none;
+  padding: 0;
+}
+
+.cart li {
+  margin: 10px 0;
+  display: flex;
+  justify-content: space-between;
+}
+
+</style>
+</head>
+<body>
+  <canvas id="matrixCanvas"></canvas>
+
+  <div class="container">
+    <h1 class="typewriter">Kanak's HackShop</h1>
+
+ <div class="shop">
+  <div class="item">
+    <h2>USB Killer</h2>
+    <p>$49.99</p>
+    <button onclick="addToCart('USB Killer', 49.99)">Add to Cart</button>
+  </div>
+  <div class="item">
+    <h2>WiFi Sniffer</h2>
+    <p>$89.99</p>
+    <button onclick="addToCart('WiFi Sniffer', 89.99)">Add to Cart</button>
+  </div>
+  <div class="item">
+    <h2>Raspberry Pi</h2>
+    <p>$59.99</p>
+    <button onclick="addToCart('Raspberry Pi', 59.99)">Add to Cart</button>
+  </div>
+  <div class="item">
+    <h2>Rubber Ducky</h2>
+    <p>$79.99</p>
+    <button onclick="addToCart('Rubber Ducky', 79.99)">Add to Cart</button>
+  </div>
+  <div class="item">
+    <h2>Keylogger Pen</h2>
+    <p>$39.99</p>
+    <button onclick="addToCart('Keylogger Pen', 39.99)">Add to Cart</button>
+  </div>
+  <div class="item">
+    <h2>Network Jammer</h2>
+    <p>$129.99</p>
+    <button onclick="addToCart('Network Jammer', 129.99)">Add to Cart</button>
+  </div>
+  <div class="item">
+    <h2>RFID Cloner</h2>
+    <p>$99.99</p>
+    <button onclick="addToCart('RFID Cloner', 99.99)">Add to Cart</button>
+  </div>
+  <div class="item">
+    <h2>Lockpick Set</h2>
+    <p>$29.99</p>
+    <button onclick="addToCart('Lockpick Set', 29.99)">Add to Cart</button>
+  </div>
+</div>
+
+
+    <div class="cart">
+      <h2>🛒 Your Cart</h2>
+      <ul id="cart-items"></ul>
+      <p>Total: $<span id="total">0.00</span></p>
+    </div>
+  </div>
+</body>
+</html>
+<script type="text/javascript">let cart = [];
+let total = 0;
+
+function addToCart(name, price) {
+  cart.push({ name, price });
+  total += price;
+  updateCart();
+}
+
+function removeFromCart(index) {
+  total -= cart[index].price;
+  cart.splice(index, 1);
+  updateCart();
+}
+
+function updateCart() {
+  const cartList = document.getElementById("cart-items");
+  const totalDisplay = document.getElementById("total");
+  cartList.innerHTML = "";
+
+  cart.forEach((item, index) => {
+    const li = document.createElement("li");
+    li.innerHTML = `${item.name} - $${item.price.toFixed(2)} 
+      <button onclick="removeFromCart(${index})" style="margin-left:10px;color:#f00;background:none;border:none;cursor:pointer;">[x]</button>`;
+    cartList.appendChild(li);
+  });
+
+  totalDisplay.textContent = total.toFixed(2);
+}
+</script>

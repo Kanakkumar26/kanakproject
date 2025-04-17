@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zay Template</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+        }
+
+        header {
+            background: #f4f4f4;
+            padding: 20px 10%;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        header h1 {
+            color: #28a745;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+        }
+
+        nav ul li {
+            margin: 0 10px;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: #333;
+        }
+
+        .banner {
+            text-align: center;
+            padding: 50px;
+            background: #e9ecef;
+        }
+
+        .banner h2 {
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+
+        .banner p {
+            color: #777;
+        }
+
+        .categories {
+            padding: 50px 10%;
+            text-align: center;
+        }
+
+        .categories h2 {
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+
+        .categories .items {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .categories .item {
+            width: 30%;
+            text-align: center;
+        }
+
+        .categories .item img {
+            width: 100%;
+            border-radius: 50%;
+        }
+
+        .categories .item a {
+            display: inline-block;
+            margin-top: 10px;
+            background: #28a745;
+            color: #fff;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+        }
+
+        .featured {
+            padding: 50px 10%;
+        }
+
+        .featured h2 {
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 1.8em;
+        }
+
+        .featured .products {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .featured .product {
+            width: 30%;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            text-align: center;
+            padding: 20px;
+            background: #fff;
+        }
+
+        .featured .product img {
+            width: 100%;
+            border-radius: 5px;
+        }
+
+        .featured .product h3 {
+            margin: 15px 0;
+        }
+
+        .featured .product .price {
+            color: #28a745;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .featured .product .rating {
+            color: gold;
+            margin-bottom: 10px;
+        }
+        
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Zay</h1>
+        <nav>
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Shop</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="banner">
+        <h2>Proident occaecat</h2>
+        <p>Aliquip ex ea commodo consequat</p>
+    </section>
+
+    <section class="categories">
+        <h2>Categories of The Month</h2>
+        <div class="items">
+            <div class="item">
+                <img src="file:///C:/Users/kumar/Downloads/category_img_01.jpg" alt="Watches"><br>
+                <a href="#">Go Shop</a>
+            </div>
+            <div class="item">
+                <img src="file:///C:/Users/kumar/Downloads/category_img_02.jpg" alt="Shoes"><br>
+                <a href="#">Go Shop</a>
+            </div>
+            <div class="item">
+                <img src="file:///C:/Users/kumar/Downloads/category_img_03.jpg" alt="Accessories"><br>
+                <a href="#">Go Shop</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="featured">
+        <h2>Featured Product</h2>
+        <div class="products">
+            <div class="product">
+                <img src="file:///C:/Users/kumar/Downloads/feature_prod_01.jpg" alt="Gym Weight">
+                <h3>Gym Weight</h3>
+                <p class="price">$240.00</p>
+                <p class="rating">★★★★★</p>
+            </div>
+            <div class="product">
+                <img src="file:///C:/Users/kumar/Downloads/feature_prod_02.jpg" alt="Cloud Nike Shoes">
+                <h3>Cloud Nike Shoes</h3>
+                <p class="price">$480.00</p>
+                <p class="rating">★★★★★</p>
+            </div>
+            <div class="product">
+                <img src="file:///C:/Users/kumar/Downloads/feature_prod_03.jpg" alt="Summer Addides Shoes">
+                <h3>Summer Addides Shoes</h3>
+                <p class="price">$360.00</p>
+                <p class="rating">★★★★★</p>
+            </div>
+        </div>
+    </section>
+</body>
+</html>
