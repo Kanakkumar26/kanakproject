@@ -1,25 +1,243 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-	<title></title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>KanakCam</title>
+  <style>
+    body {
+      background-color: #000;
+      color: #00ff00;
+      font-family: 'Courier New', Courier, monospace;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      overflow-x: hidden;
+    }
+
+    h1 {
+      font-size: 2em;
+      text-shadow: 0 0 5px #0f0, 0 0 10px #0f0;
+      animation: flicker 1s infinite alternate;
+    }
+
+    @keyframes flicker {
+      from { opacity: 1; }
+      to { opacity: 0.8; }
+    }
+
+    video {
+      width: 90%;
+      max-width: 400px;
+      margin: 20px 0;
+      border: 3px solid #00ff00;
+      border-radius: 10px;
+      box-shadow: 0 0 15px #0f0;
+      transform:scaleX(-1);
+    }
+
+    canvas {
+      display: none;
+    }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    button {
+      background-color: transparent;
+      border: 2px solid #00ff00;
+      color: #00ff00;
+      padding: 10px 15px;
+      font-family: inherit;
+      font-size: 1em;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 10px #0f0;
+    }
+
+    button:hover {
+      background-color: #00ff00;
+      color: #000;
+      box-shadow: 0 0 20px #00ff00;
+    }
+
+    #snapshot img {
+      margin-top: 10px;
+      width: 100%;
+      max-width: 400px;
+      border: 2px solid #00ff00;
+      border-radius: 5px;
+      box-shadow: 0 0 10px #00ff00;
+    }
+
+    #matrix-background {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      background: black;
+    }
+  </style>
 </head>
 <body>
-<video id="cam" autoplay></video>
 
-<script>
-  function startCamera() {
-    navigator.mediaDevices.getUserMedia({ video: true })
-      .then(function (stream) {
-        document.getElementById("cam").srcObject = stream;
-      })
-      .catch(function (error) {
-        alert("Camera error: ", error);
-      });
-  }
-  startCamera();
+  <canvas id="matrix-background"></canvas>
 
-</script>
+  <h1>KANAK CAM</h1>
+  <video id="video" autoplay playsinline></video>
 
+  <div class="controls">
+    <button id="capture">[CAPTURE]</button>
+    <button id="switch">[SWITCH CAM]</button>
+    <button id="flash">[FLASH OFF]</button>
+    <button id="zoom-in">[ZOOM +]</button>
+    <button id="zoom-out">[ZOOM -]</button>
+    <button id="fullscreen">[FULLSCREEN]</button>
+  </div>
+
+  <canvas id="canvas"></canvas>
+  <div id="snapshot"></div>
+
+  <script>
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const captureBtn = document.getElementById('capture');
+    const switchBtn = document.getElementById('switch');
+    const flashBtn = document.getElementById('flash');
+    const zoomInBtn = document.getElementById('zoom-in');
+    const zoomOutBtn = document.getElementById('zoom-out');
+    const fullscreenBtn = document.getElementById('fullscreen');
+    const snapshot = document.getElementById('snapshot');
+
+    let currentStream = null;
+    let usingFront = true;
+    let track = null;
+    let torchOn = false;
+    let zoomLevel = 1;
+
+    async function startCamera() {
+      if (currentStream) {
+        currentStream.getTracks().forEach(track => track.stop());
+      }
+
+      const constraints = {
+        video: {
+          facingMode: usingFront ? 'user' : 'environment'
+        },
+        audio: false
+      };
+
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia(constraints);
+        currentStream = stream;
+        video.srcObject = stream;
+        track = stream.getVideoTracks()[0];
+
+        // Reset zoom level after switching
+        zoomLevel = 1;
+      } catch (err) {
+        console.error('Camera error:', err);
+      }
+    }
+
+    function applyZoom(level) {
+      if (!track) return;
+      const capabilities = track.getCapabilities();
+      if (capabilities.zoom) {
+        zoomLevel = Math.min(capabilities.zoom.max, Math.max(capabilities.zoom.min, level));
+        track.applyConstraints({ advanced: [{ zoom: zoomLevel }] });
+      } else {
+        alert("Zoom not supported on this device.");
+      }
+    }
+
+    captureBtn.addEventListener('click', () => {
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      canvas.getContext('2d').drawImage(video, 0, 0);
+      const imgUrl = canvas.toDataURL('image/png');
+
+      const img = document.createElement('img');
+      img.src = imgUrl;
+
+      snapshot.innerHTML = '';
+      snapshot.appendChild(img);
+    });
+
+    switchBtn.addEventListener('click', () => {
+      usingFront = !usingFront;
+      startCamera();
+    });
+
+    flashBtn.addEventListener('click', () => {
+      if (!track) return;
+      const capabilities = track.getCapabilities();
+      if (capabilities.torch) {
+        torchOn = !torchOn;
+        track.applyConstraints({ advanced: [{ torch: torchOn }] });
+        flashBtn.textContent = torchOn ? "[FLASH ON]" : "[FLASH OFF]";
+      } else {
+        alert("Flash not supported on this device.");
+      }
+    });
+
+    zoomInBtn.addEventListener('click', () => {
+      applyZoom(zoomLevel + 1);
+    });
+
+    zoomOutBtn.addEventListener('click', () => {
+      applyZoom(zoomLevel - 1);
+    });
+
+    fullscreenBtn.addEventListener('click', () => {
+      if (!document.fullscreenElement) {
+        video.requestFullscreen();
+      } else {
+        document.exitFullscreen();
+      }
+    });
+
+    startCamera();
+
+    // Matrix background effect
+    const matrix = document.getElementById('matrix-background');
+    const ctx = matrix.getContext('2d');
+    matrix.width = window.innerWidth;
+    matrix.height = window.innerHeight;
+
+    const letters = "01";
+    const fontSize = 14;
+    const columns = matrix.width / fontSize;
+    const drops = Array.from({ length: columns }).fill(1);
+
+    function drawMatrix() {
+      ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
+      ctx.fillRect(0, 0, matrix.width, matrix.height);
+      ctx.fillStyle = "#0F0";
+      ctx.font = fontSize + "px monospace";
+
+      for (let i = 0; i < drops.length; i++) {
+        const text = letters[Math.floor(Math.random() * letters.length)];
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+        if (drops[i] * fontSize > matrix.height || Math.random() > 0.975) {
+          drops[i] = 0;
+        }
+
+        drops[i]++;
+      }
+    }
+
+    setInterval(drawMatrix, 33);
+  </script>
 
 </body>
 </html>
