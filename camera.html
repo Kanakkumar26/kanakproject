@@ -22,7 +22,6 @@
       border: 3px solid #0f0;
       border-radius: 10px;
       box-shadow: 0 0 10px #0f0;
-      transform: scaleX(-1); /* Always mirrored */
       margin: 10px auto;
       display: block;
     }
@@ -106,6 +105,21 @@
     }
   }
 
+  // Apply scale transformation for camera view (mirrored for front camera)
+  function updateScale() {
+    if (usingFront) {
+      video.style.transform = 'scaleX(-1)'; // Mirror front camera
+    } else {
+      video.style.transform = 'scaleX(1)'; // Normal for back camera
+    }
+  }
+
+  // Switch between front and back camera
+  document.getElementById('switch').onclick = () => {
+    usingFront = !usingFront;
+    startCamera();
+  };
+
   // Function to check if torch (flashlight) is available
   async function checkTorchSupport() {
     if (!track) return false;
@@ -135,21 +149,6 @@
       console.error(err);
     }
   };
-
-  // Switch between front and back camera
-  document.getElementById('switch').onclick = () => {
-    usingFront = !usingFront;
-    startCamera();
-  };
-
-  // Apply scale transformation for camera view (mirrored for front camera)
-  function updateScale() {
-    if (usingFront) {
-      video.style.transform = 'scaleX(-1)'; // Mirror front camera
-    } else {
-      video.style.transform = 'scaleX(1)'; // Normal for back camera
-    }
-  }
 
   // Zoom in and zoom out buttons
   document.getElementById('zoom-in').onclick = () => applyZoom(zoomLevel + 1);
