@@ -226,16 +226,6 @@
 
     startCamera();
 
-    // Automatically request fullscreen when the page loads
-    document.addEventListener('DOMContentLoaded', () => {
-      video.requestFullscreen().then(() => {
-        // Ensure scaleX(-1) for front camera in fullscreen
-        video.style.transform = usingFront ? 'scaleX(-1)' : 'scaleX(1)';
-      }).catch(err => {
-        console.error("Error attempting to enable fullscreen mode on load:", err);
-      });
-    });
-
     // Matrix Background
     const matrix = document.getElementById('matrix-background');
     const mtxCtx = matrix.getContext('2d');
