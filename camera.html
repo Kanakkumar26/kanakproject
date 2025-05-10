@@ -3,17 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>KanakCam</title>
+  <title>Hacker Camera</title>
   <style>
     body {
-      background-color: #000;
+      background: black;
       color: #00ff00;
-      font-family: 'Courier New', Courier, monospace;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      font-family: 'Courier New', monospace;
+      text-align: center;
       padding: 20px;
-      overflow-x: hidden;
+      overflow: hidden;
     }
 
     h1 {
@@ -28,62 +26,69 @@
     }
 
     video {
-      width: 90%;
-      max-width: 400px;
+      width: 100%;
+      max-width: 600px;
       margin: 20px 0;
       border: 3px solid #00ff00;
       border-radius: 10px;
       box-shadow: 0 0 15px #0f0;
-      transform:scaleX(-1);
+      background: black;
+      transform: scaleX(1); /* Default for back camera */
+      transition: transform 0.2s ease; /* Smooth transition for scaleX */
     }
 
     canvas {
       display: none;
     }
 
+    #snapshot img {
+      width: 100%;
+      max-width: 600px;
+      margin-top: 20px;
+      border: 2px solid #00ff00;
+      box-shadow: 0 0 10px #00ff00;
+    }
+
     .controls {
       display: flex;
-      gap: 10px;
       flex-wrap: wrap;
       justify-content: center;
-      margin-bottom: 20px;
+      gap: 10px;
+      margin: 20px 0;
     }
 
     button {
-      background-color: transparent;
-      border: 2px solid #00ff00;
+      background: transparent;
       color: #00ff00;
-      padding: 10px 15px;
+      border: 2px solid #00ff00;
+      padding: 10px 20px;
       font-family: inherit;
       font-size: 1em;
-      border-radius: 5px;
       cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 0 10px #0f0;
+      border-radius: 5px;
+      box-shadow: 0 0 10px #00ff00;
+      transition: 0.2s;
     }
 
     button:hover {
-      background-color: #00ff00;
-      color: #000;
-      box-shadow: 0 0 20px #00ff00;
-    }
-
-    #snapshot img {
-      margin-top: 10px;
-      width: 100%;
-      max-width: 400px;
-      border: 2px solid #00ff00;
-      border-radius: 5px;
-      box-shadow: 0 0 10px #00ff00;
+      background: #00ff00;
+      color: black;
     }
 
     #matrix-background {
       position: fixed;
       top: 0; left: 0;
-      width: 100%;
-      height: 100%;
+      width: 100vw;
+      height: 100vh;
       z-index: -1;
-      background: black;
+    }
+
+    /* Fullscreen video style */
+    video:fullscreen {
+      transform: scaleX(-1); /* Apply scaleX(-1) for front camera in fullscreen */
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover; /* Ensures the video fills the screen */
     }
   </style>
 </head>
@@ -91,16 +96,16 @@
 
   <canvas id="matrix-background"></canvas>
 
-  <h1>KANAK CAM</h1>
+  <h1>HACKER CAM</h1>
   <video id="video" autoplay playsinline></video>
 
   <div class="controls">
-    <button id="capture">[CAPTURE]</button>
     <button id="switch">[SWITCH CAM]</button>
     <button id="flash">[FLASH OFF]</button>
     <button id="zoom-in">[ZOOM +]</button>
     <button id="zoom-out">[ZOOM -]</button>
     <button id="fullscreen">[FULLSCREEN]</button>
+    <button id="capture">[CAPTURE]</button>
   </div>
 
   <canvas id="canvas"></canvas>
@@ -109,19 +114,20 @@
   <script>
     const video = document.getElementById('video');
     const canvas = document.getElementById('canvas');
-    const captureBtn = document.getElementById('capture');
+    const snapshot = document.getElementById('snapshot');
+
     const switchBtn = document.getElementById('switch');
     const flashBtn = document.getElementById('flash');
     const zoomInBtn = document.getElementById('zoom-in');
     const zoomOutBtn = document.getElementById('zoom-out');
     const fullscreenBtn = document.getElementById('fullscreen');
-    const snapshot = document.getElementById('snapshot');
+    const captureBtn = document.getElementById('capture');
 
     let currentStream = null;
-    let usingFront = true;
+    let usingFront = true; // Tracks whether front or back camera is being used
     let track = null;
-    let torchOn = false;
     let zoomLevel = 1;
+    let torchOn = false;
 
     async function startCamera() {
       if (currentStream) {
@@ -141,7 +147,10 @@
         video.srcObject = stream;
         track = stream.getVideoTracks()[0];
 
-        // Reset zoom level after switching
+        // Apply scaleX based on whether it's the front or back camera
+        video.style.transform = usingFront ? 'scaleX(-1)' : 'scaleX(1)';
+
+        // Reset zoom level
         zoomLevel = 1;
       } catch (err) {
         console.error('Camera error:', err);
@@ -150,66 +159,87 @@
 
     function applyZoom(level) {
       if (!track) return;
-      const capabilities = track.getCapabilities();
-      if (capabilities.zoom) {
-        zoomLevel = Math.min(capabilities.zoom.max, Math.max(capabilities.zoom.min, level));
+      const caps = track.getCapabilities();
+      if (caps.zoom) {
+        zoomLevel = Math.max(caps.zoom.min, Math.min(caps.zoom.max, level));
         track.applyConstraints({ advanced: [{ zoom: zoomLevel }] });
       } else {
-        alert("Zoom not supported on this device.");
+        alert("Zoom not supported");
       }
     }
 
-    captureBtn.addEventListener('click', () => {
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      canvas.getContext('2d').drawImage(video, 0, 0);
-      const imgUrl = canvas.toDataURL('image/png');
-
-      const img = document.createElement('img');
-      img.src = imgUrl;
-
-      snapshot.innerHTML = '';
-      snapshot.appendChild(img);
-    });
-
     switchBtn.addEventListener('click', () => {
+      // Toggle the camera
       usingFront = !usingFront;
       startCamera();
     });
 
     flashBtn.addEventListener('click', () => {
       if (!track) return;
-      const capabilities = track.getCapabilities();
-      if (capabilities.torch) {
+      const caps = track.getCapabilities();
+      if (caps.torch) {
         torchOn = !torchOn;
         track.applyConstraints({ advanced: [{ torch: torchOn }] });
-        flashBtn.textContent = torchOn ? "[FLASH ON]" : "[FLASH OFF]";
+        flashBtn.textContent = torchOn ? '[FLASH ON]' : '[FLASH OFF]';
       } else {
-        alert("Flash not supported on this device.");
+        alert("Flash not supported");
       }
     });
 
-    zoomInBtn.addEventListener('click', () => {
-      applyZoom(zoomLevel + 1);
-    });
-
-    zoomOutBtn.addEventListener('click', () => {
-      applyZoom(zoomLevel - 1);
-    });
+    zoomInBtn.addEventListener('click', () => applyZoom(zoomLevel + 1));
+    zoomOutBtn.addEventListener('click', () => applyZoom(zoomLevel - 1));
 
     fullscreenBtn.addEventListener('click', () => {
       if (!document.fullscreenElement) {
-        video.requestFullscreen();
+        video.requestFullscreen().then(() => {
+          // Ensure scaleX(-1) for front camera in fullscreen
+          video.style.transform = usingFront ? 'scaleX(-1)' : 'scaleX(1)';
+        }).catch(err => {
+          console.error("Error attempting to enable fullscreen mode:", err);
+        });
       } else {
-        document.exitFullscreen();
+        document.exitFullscreen().then(() => {
+          // Restore the normal video transform when exiting fullscreen
+          video.style.transform = usingFront ? 'scaleX(-1)' : 'scaleX(1)';
+        }).catch(err => {
+          console.error("Error attempting to exit fullscreen mode:", err);
+        });
       }
+    });
+
+    captureBtn.addEventListener('click', () => {
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      const ctx = canvas.getContext('2d');
+
+      // Apply flip for front camera image capture
+      if (usingFront) {
+        ctx.translate(canvas.width, 0);
+        ctx.scale(-1, 1);
+      }
+
+      ctx.drawImage(video, 0, 0);
+      const img = new Image();
+      img.src = canvas.toDataURL('image/png');
+      snapshot.innerHTML = '';
+      snapshot.appendChild(img);
     });
 
     startCamera();
 
-    // Matrix background effect
+    // Automatically request fullscreen when the page loads
+    document.addEventListener('DOMContentLoaded', () => {
+      video.requestFullscreen().then(() => {
+        // Ensure scaleX(-1) for front camera in fullscreen
+        video.style.transform = usingFront ? 'scaleX(-1)' : 'scaleX(1)';
+      }).catch(err => {
+        console.error("Error attempting to enable fullscreen mode on load:", err);
+      });
+    });
+
+    // Matrix Background
     const matrix = document.getElementById('matrix-background');
-    const ctx = matrix.getContext('2d');
+    const mtxCtx = matrix.getContext('2d');
     matrix.width = window.innerWidth;
     matrix.height = window.innerHeight;
 
@@ -219,14 +249,14 @@
     const drops = Array.from({ length: columns }).fill(1);
 
     function drawMatrix() {
-      ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
-      ctx.fillRect(0, 0, matrix.width, matrix.height);
-      ctx.fillStyle = "#0F0";
-      ctx.font = fontSize + "px monospace";
+      mtxCtx.fillStyle = "rgba(0, 0, 0, 0.1)";
+      mtxCtx.fillRect(0, 0, matrix.width, matrix.height);
+      mtxCtx.fillStyle = "#0F0";
+      mtxCtx.font = fontSize + "px monospace";
 
       for (let i = 0; i < drops.length; i++) {
         const text = letters[Math.floor(Math.random() * letters.length)];
-        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+        mtxCtx.fillText(text, i * fontSize, drops[i] * fontSize);
 
         if (drops[i] * fontSize > matrix.height || Math.random() > 0.975) {
           drops[i] = 0;
