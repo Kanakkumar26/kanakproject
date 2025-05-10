@@ -33,8 +33,6 @@
       border-radius: 10px;
       box-shadow: 0 0 15px #0f0;
       background: black;
-      transform: scaleX(1); /* Default for back camera */
-      transition: transform 0.2s ease; /* Smooth transition for scaleX */
     }
 
     canvas {
@@ -82,14 +80,6 @@
       height: 100vh;
       z-index: -1;
     }
-
-    /* Fullscreen video style */
-    video:fullscreen {
-      transform: scaleX(-1); /* Apply scaleX(-1) for front camera in fullscreen */
-      width: 100vw;
-      height: 100vh;
-      object-fit: cover; /* Ensures the video fills the screen */
-    }
   </style>
 </head>
 <body>
@@ -124,7 +114,7 @@
     const captureBtn = document.getElementById('capture');
 
     let currentStream = null;
-    let usingFront = true; // Tracks whether front or back camera is being used
+    let usingFront = true;
     let track = null;
     let zoomLevel = 1;
     let torchOn = false;
@@ -147,7 +137,7 @@
         video.srcObject = stream;
         track = stream.getVideoTracks()[0];
 
-        // Apply scaleX based on whether it's the front or back camera
+        // Flip front camera
         video.style.transform = usingFront ? 'scaleX(-1)' : 'scaleX(1)';
 
         // Reset zoom level
@@ -169,7 +159,6 @@
     }
 
     switchBtn.addEventListener('click', () => {
-      // Toggle the camera
       usingFront = !usingFront;
       startCamera();
     });
@@ -191,19 +180,9 @@
 
     fullscreenBtn.addEventListener('click', () => {
       if (!document.fullscreenElement) {
-        video.requestFullscreen().then(() => {
-          // Ensure scaleX(-1) for front camera in fullscreen
-          video.style.transform = usingFront ? 'scaleX(-1)' : 'scaleX(1)';
-        }).catch(err => {
-          console.error("Error attempting to enable fullscreen mode:", err);
-        });
+        video.requestFullscreen();
       } else {
-        document.exitFullscreen().then(() => {
-          // Restore the normal video transform when exiting fullscreen
-          video.style.transform = usingFront ? 'scaleX(-1)' : 'scaleX(1)';
-        }).catch(err => {
-          console.error("Error attempting to exit fullscreen mode:", err);
-        });
+        document.exitFullscreen();
       }
     });
 
@@ -212,7 +191,7 @@
       canvas.height = video.videoHeight;
       const ctx = canvas.getContext('2d');
 
-      // Apply flip for front camera image capture
+      // Mirror front camera image capture
       if (usingFront) {
         ctx.translate(canvas.width, 0);
         ctx.scale(-1, 1);
@@ -226,16 +205,6 @@
     });
 
     startCamera();
-
-    // Automatically request fullscreen when the page loads
-    document.addEventListener('DOMContentLoaded', () => {
-      video.requestFullscreen().then(() => {
-        // Ensure scaleX(-1) for front camera in fullscreen
-        video.style.transform = usingFront ? 'scaleX(-1)' : 'scaleX(1)';
-      }).catch(err => {
-        console.error("Error attempting to enable fullscreen mode on load:", err);
-      });
-    });
 
     // Matrix Background
     const matrix = document.getElementById('matrix-background');
