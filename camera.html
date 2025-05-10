@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Hacker Cam</title>
+  <title>Camera with Flashlight</title>
   <style>
     body {
       margin: 0;
@@ -51,11 +51,16 @@
       border-radius: 8px;
       box-shadow: 0 0 10px #0f0;
     }
+    #flash-message {
+      color: red;
+      font-size: 1.2rem;
+      margin-top: 20px;
+    }
   </style>
 </head>
 <body>
 
-<h1>HACKER CAM</h1>
+<h1>Camera with Flashlight</h1>
 <video id="video" autoplay playsinline></video>
 
 <div class="controls">
@@ -66,6 +71,8 @@
   <button id="capture">CAPTURE</button>
 </div>
 
+<div id="flash-message"></div>
+
 <canvas id="canvas" style="display:none;"></canvas>
 <div id="snapshot"></div>
 
@@ -73,14 +80,15 @@
   const video = document.getElementById('video');
   const canvas = document.getElementById('canvas');
   const snapshot = document.getElementById('snapshot');
-  
+  const flashMessage = document.getElementById('flash-message');
+
   let currentStream;
   let usingFront = true;
   let track = null;
   let zoomLevel = 1;
   let torchOn = false;
-  
-  // Function to start the camera stream
+
+  // Start the camera stream
   async function startCamera() {
     if (currentStream) currentStream.getTracks().forEach(t => t.stop());
 
@@ -97,7 +105,47 @@
     }
   }
 
-  // Function to apply zoom on the camera if supported
+  // Function to check if torch (flashlight) is available
+  async function checkTorchSupport() {
+    if (!track) return;
+
+    const capabilities = track.getCapabilities();
+    if ('torch' in capabilities) {
+      return true;
+    } else {
+      flashMessage.textContent = "Flashlight (Torch) not supported on this device.";
+      return false;
+    }
+  }
+
+  // Toggle the flashlight (torch) on/off
+  document.getElementById('flash').onclick = async () => {
+    if (!track) return;
+
+    const isTorchSupported = await checkTorchSupport();
+    if (!isTorchSupported) return;
+
+    try {
+      torchOn = !torchOn;
+      await track.applyConstraints({ advanced: [{ torch: torchOn }] });
+      flashMessage.textContent = torchOn ? "Flashlight ON" : "Flashlight OFF";
+    } catch (err) {
+      flashMessage.textContent = "Error toggling flashlight.";
+      console.error(err);
+    }
+  };
+
+  // Switch between front and back camera
+  document.getElementById('switch').onclick = () => {
+    usingFront = !usingFront;
+    startCamera();
+  };
+
+  // Zoom in and zoom out buttons
+  document.getElementById('zoom-in').onclick = () => applyZoom(zoomLevel + 1);
+  document.getElementById('zoom-out').onclick = () => applyZoom(zoomLevel - 1);
+
+  // Apply zoom functionality if supported
   function applyZoom(level) {
     if (!track) return;
     const caps = track.getCapabilities();
@@ -109,34 +157,7 @@
     }
   }
 
-  // Switching between front and back camera
-  document.getElementById('switch').onclick = () => {
-    usingFront = !usingFront;
-    startCamera();
-  };
-
-  // Handle the flash button (toggle the mobile torch)
-  document.getElementById('flash').onclick = async () => {
-    if (!track) return;
-
-    const caps = track.getCapabilities();
-    if (caps.torch) {
-      try {
-        torchOn = !torchOn;
-        await track.applyConstraints({ advanced: [{ torch: torchOn }] });
-      } catch (err) {
-        alert("Flash control failed. Your device might not support it.");
-      }
-    } else {
-      alert("Flashlight (Torch) is not supported on this device.");
-    }
-  };
-
-  // Zoom in and zoom out buttons
-  document.getElementById('zoom-in').onclick = () => applyZoom(zoomLevel + 1);
-  document.getElementById('zoom-out').onclick = () => applyZoom(zoomLevel - 1);
-
-  // Capture snapshot button
+  // Capture snapshot
   document.getElementById('capture').onclick = () => {
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
@@ -150,7 +171,7 @@
     snapshot.appendChild(img);
   };
 
-  // Start the camera on load
+  // Start the camera on page load
   startCamera();
 </script>
 
