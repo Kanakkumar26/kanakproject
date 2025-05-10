@@ -124,7 +124,7 @@
     const captureBtn = document.getElementById('capture');
 
     let currentStream = null;
-    let usingFront = true; // Tracks whether front or back camera is being used
+    let usingFront = true;
     let track = null;
     let zoomLevel = 1;
     let torchOn = false;
@@ -147,7 +147,7 @@
         video.srcObject = stream;
         track = stream.getVideoTracks()[0];
 
-        // Apply scaleX based on whether it's the front or back camera
+        // Flip front camera and keep normal for back camera
         video.style.transform = usingFront ? 'scaleX(-1)' : 'scaleX(1)';
 
         // Reset zoom level
@@ -169,7 +169,6 @@
     }
 
     switchBtn.addEventListener('click', () => {
-      // Toggle the camera
       usingFront = !usingFront;
       startCamera();
     });
@@ -192,7 +191,7 @@
     fullscreenBtn.addEventListener('click', () => {
       if (!document.fullscreenElement) {
         video.requestFullscreen().then(() => {
-          // Ensure scaleX(-1) for front camera in fullscreen
+          // Flip the camera when fullscreen is active
           video.style.transform = usingFront ? 'scaleX(-1)' : 'scaleX(1)';
         }).catch(err => {
           console.error("Error attempting to enable fullscreen mode:", err);
