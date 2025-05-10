@@ -34,7 +34,6 @@
       box-shadow: 0 0 15px #0f0;
       background: black;
       transform: scaleX(1); /* Default for back camera */
-      transition: transform 0.2s ease; /* Smooth transition for scaleX */
     }
 
     canvas {
@@ -81,14 +80,6 @@
       width: 100vw;
       height: 100vh;
       z-index: -1;
-    }
-
-    /* Fullscreen video style */
-    video:fullscreen {
-      transform: scaleX(-1); /* Apply scaleX(-1) for front camera in fullscreen */
-      width: 100vw;
-      height: 100vh;
-      object-fit: cover; /* Ensures the video fills the screen */
     }
   </style>
 </head>
