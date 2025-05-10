@@ -5,70 +5,60 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Hacker Cam</title>
   <style>
-    * { box-sizing: border-box; }
     body {
       margin: 0;
       background: black;
       color: #0f0;
       font-family: monospace;
-      overflow-x: hidden;
-    }
-
-    h1 {
       text-align: center;
-      font-size: 2rem;
-      margin: 10px;
-      text-shadow: 0 0 10px #0f0;
     }
-
+    h1 {
+      margin: 10px;
+      text-shadow: 0 0 8px #0f0;
+    }
     video {
       width: 100%;
       max-width: 700px;
-      margin: 10px auto;
-      display: block;
       border: 3px solid #0f0;
       border-radius: 10px;
-      box-shadow: 0 0 20px #0f0;
+      box-shadow: 0 0 10px #0f0;
       transform: scaleX(-1); /* Always mirrored */
+      margin: 10px auto;
+      display: block;
     }
-
     .controls {
       display: flex;
-      flex-wrap: wrap;
       justify-content: center;
+      flex-wrap: wrap;
       gap: 10px;
       margin: 10px;
     }
-
     button {
       background: black;
       color: #0f0;
       border: 2px solid #0f0;
       padding: 10px 20px;
       border-radius: 5px;
-      font-family: monospace;
       font-size: 1rem;
       cursor: pointer;
       box-shadow: 0 0 10px #0f0;
-      transition: 0.2s;
     }
-
-    button:hover {
-      background: #0f0;
-      color: black;
-    }
-
-    #snapshot {
-      text-align: center;
-      margin: 20px 0;
-    }
-
     #snapshot img {
       width: 100%;
       max-width: 700px;
       border: 2px solid #0f0;
-      box-shadow: 0 0 10px #0f0;
+      margin-top: 10px;
       border-radius: 8px;
+      box-shadow: 0 0 10px #0f0;
+    }
+    #flash-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      background: white;
+      display: none;
+      z-index: 1000;
     }
   </style>
 </head>
@@ -78,20 +68,23 @@
 <video id="video" autoplay playsinline></video>
 
 <div class="controls">
-  <button id="switch">[SWITCH]</button>
-  <button id="flash">[FLASH]</button>
-  <button id="zoom-in">[ZOOM +]</button>
-  <button id="zoom-out">[ZOOM -]</button>
-  <button id="capture">[CAPTURE]</button>
+  <button id="switch">SWITCH</button>
+  <button id="flash">FLASH</button>
+  <button id="zoom-in">ZOOM +</button>
+  <button id="zoom-out">ZOOM -</button>
+  <button id="capture">CAPTURE</button>
 </div>
 
 <canvas id="canvas" style="display:none;"></canvas>
 <div id="snapshot"></div>
+<div id="flash-overlay"></div>
 
 <script>
   const video = document.getElementById('video');
   const canvas = document.getElementById('canvas');
   const snapshot = document.getElementById('snapshot');
+  const flashOverlay = document.getElementById('flash-overlay');
+
   let currentStream;
   let usingFront = true;
   let track = null;
@@ -99,22 +92,17 @@
   let torchOn = false;
 
   async function startCamera() {
-    if (currentStream) {
-      currentStream.getTracks().forEach(t => t.stop());
-    }
-
-    const constraints = {
-      video: { facingMode: usingFront ? 'user' : 'environment' },
-      audio: false
-    };
+    if (currentStream) currentStream.getTracks().forEach(t => t.stop());
 
     try {
-      currentStream = await navigator.mediaDevices.getUserMedia(constraints);
+      currentStream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: usingFront ? 'user' : 'environment' }, audio: false
+      });
       video.srcObject = currentStream;
       track = currentStream.getVideoTracks()[0];
       zoomLevel = 1;
     } catch (err) {
-      alert("Camera access failed.");
+      alert("Camera failed.");
       console.error(err);
     }
   }
@@ -126,7 +114,7 @@
       zoomLevel = Math.max(caps.zoom.min, Math.min(caps.zoom.max, level));
       track.applyConstraints({ advanced: [{ zoom: zoomLevel }] });
     } else {
-      alert("Zoom not supported");
+      alert("Zoom not supported.");
     }
   }
 
@@ -136,21 +124,25 @@
   };
 
   document.getElementById('flash').onclick = async () => {
-    if (!track) return alert("Camera not ready");
+    if (!track) return;
 
     const caps = track.getCapabilities();
-
     if (caps.torch) {
       try {
         torchOn = !torchOn;
         await track.applyConstraints({ advanced: [{ torch: torchOn }] });
-      } catch (err) {
-        alert("Torch control failed: " + err.message);
+      } catch {
+        fakeFlash();
       }
     } else {
-      alert("Flash not supported on this device/browser. Try back camera on Chrome over HTTPS.");
+      fakeFlash();
     }
   };
+
+  function fakeFlash() {
+    flashOverlay.style.display = 'block';
+    setTimeout(() => flashOverlay.style.display = 'none', 300);
+  }
 
   document.getElementById('zoom-in').onclick = () => applyZoom(zoomLevel + 1);
   document.getElementById('zoom-out').onclick = () => applyZoom(zoomLevel - 1);
@@ -159,14 +151,11 @@
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
     const ctx = canvas.getContext('2d');
-
-    // Always flip snapshot because video is mirrored
     ctx.translate(canvas.width, 0);
     ctx.scale(-1, 1);
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
     const img = new Image();
-    img.src = canvas.toDataURL('image/png');
+    img.src = canvas.toDataURL();
     snapshot.innerHTML = '';
     snapshot.appendChild(img);
   };
