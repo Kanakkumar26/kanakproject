@@ -3,49 +3,33 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Hacker Camera</title>
+  <title>Hacker Cam</title>
   <style>
+    * { box-sizing: border-box; }
     body {
+      margin: 0;
       background: black;
-      color: #00ff00;
-      font-family: 'Courier New', monospace;
-      text-align: center;
-      padding: 20px;
-      overflow: hidden;
+      color: #0f0;
+      font-family: monospace;
+      overflow-x: hidden;
     }
 
     h1 {
-      font-size: 2em;
-      text-shadow: 0 0 5px #0f0, 0 0 10px #0f0;
-      animation: flicker 1s infinite alternate;
-    }
-
-    @keyframes flicker {
-      from { opacity: 1; }
-      to { opacity: 0.8; }
+      text-align: center;
+      font-size: 2rem;
+      margin: 10px;
+      text-shadow: 0 0 10px #0f0;
     }
 
     video {
       width: 100%;
-      max-width: 600px;
-      margin: 20px 0;
-      border: 3px solid #00ff00;
+      max-width: 700px;
+      margin: 10px auto;
+      display: block;
+      border: 3px solid #0f0;
       border-radius: 10px;
-      box-shadow: 0 0 15px #0f0;
-      background: black;
-      transform: scaleX(1); /* Default for back camera */
-    }
-
-    canvas {
-      display: none;
-    }
-
-    #snapshot img {
-      width: 100%;
-      max-width: 600px;
-      margin-top: 20px;
-      border: 2px solid #00ff00;
-      box-shadow: 0 0 10px #00ff00;
+      box-shadow: 0 0 20px #0f0;
+      transform: scaleX(-1); /* Always mirrored */
     }
 
     .controls {
@@ -53,201 +37,136 @@
       flex-wrap: wrap;
       justify-content: center;
       gap: 10px;
-      margin: 20px 0;
+      margin: 10px;
     }
 
     button {
-      background: transparent;
-      color: #00ff00;
-      border: 2px solid #00ff00;
+      background: black;
+      color: #0f0;
+      border: 2px solid #0f0;
       padding: 10px 20px;
-      font-family: inherit;
-      font-size: 1em;
-      cursor: pointer;
       border-radius: 5px;
-      box-shadow: 0 0 10px #00ff00;
+      font-family: monospace;
+      font-size: 1rem;
+      cursor: pointer;
+      box-shadow: 0 0 10px #0f0;
       transition: 0.2s;
     }
 
     button:hover {
-      background: #00ff00;
+      background: #0f0;
       color: black;
     }
 
-    #matrix-background {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100vw;
-      height: 100vh;
-      z-index: -1;
+    #snapshot {
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    #snapshot img {
+      width: 100%;
+      max-width: 700px;
+      border: 2px solid #0f0;
+      box-shadow: 0 0 10px #0f0;
+      border-radius: 8px;
     }
   </style>
 </head>
 <body>
 
-  <canvas id="matrix-background"></canvas>
+<h1>HACKER CAM</h1>
+<video id="video" autoplay playsinline></video>
 
-  <h1>HACKER CAM</h1>
-  <video id="video" autoplay playsinline></video>
+<div class="controls">
+  <button id="switch">[SWITCH]</button>
+  <button id="flash">[FLASH]</button>
+  <button id="zoom-in">[ZOOM +]</button>
+  <button id="zoom-out">[ZOOM -]</button>
+  <button id="capture">[CAPTURE]</button>
+</div>
 
-  <div class="controls">
-    <button id="switch">[SWITCH CAM]</button>
-    <button id="flash">[FLASH OFF]</button>
-    <button id="zoom-in">[ZOOM +]</button>
-    <button id="zoom-out">[ZOOM -]</button>
-    <button id="fullscreen">[FULLSCREEN]</button>
-    <button id="capture">[CAPTURE]</button>
-  </div>
+<canvas id="canvas" style="display:none;"></canvas>
+<div id="snapshot"></div>
 
-  <canvas id="canvas"></canvas>
-  <div id="snapshot"></div>
+<script>
+  const video = document.getElementById('video');
+  const canvas = document.getElementById('canvas');
+  const snapshot = document.getElementById('snapshot');
+  let currentStream;
+  let usingFront = true;
+  let track = null;
+  let zoomLevel = 1;
+  let torchOn = false;
 
-  <script>
-    const video = document.getElementById('video');
-    const canvas = document.getElementById('canvas');
-    const snapshot = document.getElementById('snapshot');
-
-    const switchBtn = document.getElementById('switch');
-    const flashBtn = document.getElementById('flash');
-    const zoomInBtn = document.getElementById('zoom-in');
-    const zoomOutBtn = document.getElementById('zoom-out');
-    const fullscreenBtn = document.getElementById('fullscreen');
-    const captureBtn = document.getElementById('capture');
-
-    let currentStream = null;
-    let usingFront = true;
-    let track = null;
-    let zoomLevel = 1;
-    let torchOn = false;
-
-    async function startCamera() {
-      if (currentStream) {
-        currentStream.getTracks().forEach(track => track.stop());
-      }
-
-      const constraints = {
-        video: {
-          facingMode: usingFront ? 'user' : 'environment'
-        },
-        audio: false
-      };
-
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia(constraints);
-        currentStream = stream;
-        video.srcObject = stream;
-        track = stream.getVideoTracks()[0];
-
-        // Flip front camera and keep normal for back camera
-        video.style.transform = usingFront ? 'scaleX(-1)' : 'scaleX(1)';
-
-        // Reset zoom level
-        zoomLevel = 1;
-      } catch (err) {
-        console.error('Camera error:', err);
-      }
+  async function startCamera() {
+    if (currentStream) {
+      currentStream.getTracks().forEach(t => t.stop());
     }
 
-    function applyZoom(level) {
-      if (!track) return;
-      const caps = track.getCapabilities();
-      if (caps.zoom) {
-        zoomLevel = Math.max(caps.zoom.min, Math.min(caps.zoom.max, level));
-        track.applyConstraints({ advanced: [{ zoom: zoomLevel }] });
-      } else {
-        alert("Zoom not supported");
-      }
+    const constraints = {
+      video: { facingMode: usingFront ? 'user' : 'environment' },
+      audio: false
+    };
+
+    try {
+      currentStream = await navigator.mediaDevices.getUserMedia(constraints);
+      video.srcObject = currentStream;
+      track = currentStream.getVideoTracks()[0];
+      zoomLevel = 1;
+    } catch (err) {
+      alert("Camera access failed.");
+      console.error(err);
     }
+  }
 
-    switchBtn.addEventListener('click', () => {
-      usingFront = !usingFront;
-      startCamera();
-    });
+  function applyZoom(level) {
+    if (!track) return;
+    const caps = track.getCapabilities();
+    if (caps.zoom) {
+      zoomLevel = Math.max(caps.zoom.min, Math.min(caps.zoom.max, level));
+      track.applyConstraints({ advanced: [{ zoom: zoomLevel }] });
+    } else {
+      alert("Zoom not supported");
+    }
+  }
 
-    flashBtn.addEventListener('click', () => {
-      if (!track) return;
-      const caps = track.getCapabilities();
-      if (caps.torch) {
-        torchOn = !torchOn;
-        track.applyConstraints({ advanced: [{ torch: torchOn }] });
-        flashBtn.textContent = torchOn ? '[FLASH ON]' : '[FLASH OFF]';
-      } else {
-        alert("Flash not supported");
-      }
-    });
-
-    zoomInBtn.addEventListener('click', () => applyZoom(zoomLevel + 1));
-    zoomOutBtn.addEventListener('click', () => applyZoom(zoomLevel - 1));
-
-    fullscreenBtn.addEventListener('click', () => {
-      if (!document.fullscreenElement) {
-        video.requestFullscreen().then(() => {
-          // Flip the camera when fullscreen is active
-          video.style.transform = usingFront ? 'scaleX(-1)' : 'scaleX(1)';
-        }).catch(err => {
-          console.error("Error attempting to enable fullscreen mode:", err);
-        });
-      } else {
-        document.exitFullscreen().then(() => {
-          // Restore the normal video transform when exiting fullscreen
-          video.style.transform = usingFront ? 'scaleX(-1)' : 'scaleX(1)';
-        }).catch(err => {
-          console.error("Error attempting to exit fullscreen mode:", err);
-        });
-      }
-    });
-
-    captureBtn.addEventListener('click', () => {
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      const ctx = canvas.getContext('2d');
-
-      // Apply flip for front camera image capture
-      if (usingFront) {
-        ctx.translate(canvas.width, 0);
-        ctx.scale(-1, 1);
-      }
-
-      ctx.drawImage(video, 0, 0);
-      const img = new Image();
-      img.src = canvas.toDataURL('image/png');
-      snapshot.innerHTML = '';
-      snapshot.appendChild(img);
-    });
-
+  document.getElementById('switch').onclick = () => {
+    usingFront = !usingFront;
     startCamera();
+  };
 
-    // Matrix Background
-    const matrix = document.getElementById('matrix-background');
-    const mtxCtx = matrix.getContext('2d');
-    matrix.width = window.innerWidth;
-    matrix.height = window.innerHeight;
-
-    const letters = "01";
-    const fontSize = 14;
-    const columns = matrix.width / fontSize;
-    const drops = Array.from({ length: columns }).fill(1);
-
-    function drawMatrix() {
-      mtxCtx.fillStyle = "rgba(0, 0, 0, 0.1)";
-      mtxCtx.fillRect(0, 0, matrix.width, matrix.height);
-      mtxCtx.fillStyle = "#0F0";
-      mtxCtx.font = fontSize + "px monospace";
-
-      for (let i = 0; i < drops.length; i++) {
-        const text = letters[Math.floor(Math.random() * letters.length)];
-        mtxCtx.fillText(text, i * fontSize, drops[i] * fontSize);
-
-        if (drops[i] * fontSize > matrix.height || Math.random() > 0.975) {
-          drops[i] = 0;
-        }
-
-        drops[i]++;
-      }
+  document.getElementById('flash').onclick = () => {
+    if (!track) return;
+    const caps = track.getCapabilities();
+    if (caps.torch) {
+      torchOn = !torchOn;
+      track.applyConstraints({ advanced: [{ torch: torchOn }] });
+    } else {
+      alert("Flash not supported");
     }
+  };
 
-    setInterval(drawMatrix, 33);
-  </script>
+  document.getElementById('zoom-in').onclick = () => applyZoom(zoomLevel + 1);
+  document.getElementById('zoom-out').onclick = () => applyZoom(zoomLevel - 1);
+
+  document.getElementById('capture').onclick = () => {
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    const ctx = canvas.getContext('2d');
+
+    // Always flip for snapshot since video is always mirrored
+    ctx.translate(canvas.width, 0);
+    ctx.scale(-1, 1);
+
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    const img = new Image();
+    img.src = canvas.toDataURL('image/png');
+    snapshot.innerHTML = '';
+    snapshot.appendChild(img);
+  };
+
+  startCamera();
+</script>
 
 </body>
 </html>
