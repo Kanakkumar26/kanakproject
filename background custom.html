@@ -1,217 +1,263 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>project</title>
-<style>
-header {
-    background: transparent;
-    padding: 20px 10%;
-    margin: 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    overflow: hidden;
-}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kanak Kumar Projects</title>
 
-header h1 {
-    color: #aeb6bf;
-}
+  <!-- Style -->
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-nav ul {
-    list-style: none;
-    display: flex;
-}
+    html, body {
+      height: 100%;
+      font-family: Arial, sans-serif;
+      color: white;
+      overflow-x: hidden;
+    }
 
-nav ul li {
-    margin: 0 10px;
-}
+    body {
+      background: radial-gradient(circle at center, rgba(0, 255, 255, 0.2) 0%, rgba(0, 50, 50, 0.8) 70%) no-repeat,
+                  radial-gradient(circle at center, rgba(0, 150, 255, 0.3) 0%, rgba(0, 40, 60, 0.9) 80%) no-repeat,
+                  radial-gradient(circle at center, rgba(0, 200, 150, 0.4) 0%, rgba(0, 20, 40, 1) 90%) no-repeat;
+      background-size: 200% 200%, 250% 250%, 300% 300%;
+      animation: aquaEffect 6s infinite alternate ease-in-out;
+    }
 
-nav ul li a {
-    text-decoration: none;
-    color: white;
-}
+    @keyframes aquaEffect {
+      0% { background-position: 0% 0%, 50% 50%, 100% 100%; }
+      25% { background-position: 100% 0%, 0% 100%, 50% 50%; }
+      50% { background-position: 100% 100%, 50% 50%, 0% 0%; }
+      75% { background-position: 0% 100%, 100% 0%, 50% 50%; }
+      100% { background-position: 0% 0%, 50% 50%, 100% 100%; }
+    }
 
-nav a:hover {
-    color: #aeb6bf;
-}
+    #particles-js {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
 
-.hero {
-    background-color: transparent;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    padding: 10px;
-    color: #fff;
-}
+    header {
+      padding: 20px 10%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
 
-.hero-content {
-    margin-right: 1vh;
-    max-width: 900px;
-}
+    header h1 {
+      color: #aef1f1;
+      font-family: 'Cooper Black', serif;
+      font-size: 2rem;
+    }
 
-.hero h1 {
-    font-size: 36px;
-    margin-bottom: 10px;
-    text-align: left;
-    color: #aeb6bf;
-    font-family: cooper black;
-}
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
 
-@keyframes pointerEffect {
-    0% { background-position: 0% 0%, 50% 50%, 100% 100%; }
-    25% { background-position: 100% 0%, 0% 100%, 50% 50%; }
-    50% { background-position: 100% 100%, 50% 50%, 0% 0%; } 
-    75% { background-position: 0% 100%, 100% 0%, 50% 50%; }
-    100% { background-position: 0% 0%, 50% 50%, 100% 100%; }
-}
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-size: 1rem;
+    }
 
-body {
-    margin: 0;
-    padding: 0;
-    padding-left: 20px;
-    padding-bottom: 20vh;
-    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.2) 0%, rgba(0, 0, 0, 0.8) 70%) no-repeat,
-                radial-gradient(circle at center, rgba(255, 0, 150, 0.3) 0%, rgba(0, 0, 0, 0.9) 80%) no-repeat,
-                radial-gradient(circle at center, rgba(0, 150, 255, 0.4) 0%, rgba(0, 0, 0, 1) 90%) no-repeat;
-    background-size: 200% 200%, 250% 250%, 300% 300%;
-    animation: pointerEffect 6s infinite alternate ease-in-out;
-}
+    nav a:hover {
+      color: #aef1f1;
+    }
 
-        main {
-            padding: 20px;
-            flex-wrap: wrap;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            display: flex;
-        }
-        .card {
-            backdrop-filter: blur(220px); 
-            border: 1px solid #30363d;
-            border-radius: 8px;
-            padding: 50px;
-            margin: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-            transition: transform 0.3s, box-shadow 0.3s;
-            width: 50rem;
-        }
+    .hero {
+      text-align: center;
+      padding: 40px 20px;
+    }
 
-        .card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.3);
-        }
+    .hero h2 {
+      font-size: 2rem;
+      color: #aef1f1;
+      margin-bottom: 10px;
+    }
 
-        .card h2 {
-            color: #58a6ff;
-            margin-bottom: 10px;
-        }   
-        .card a{
-            display: inline-block;
-            margin-top: 10px;
-            background: transparent;
-            color: white;
-            text-decoration: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-        }
-        .card p {
-            line-height: 1.5;
-            color:#aeb6bf ;
-}   
-            @media screen and (max-width:800px){
- 
-        .card {
-            backdrop-filter: blur(220px); 
-            border: 1px solid #30363d;
-            border-radius: 8px;
-            padding: 20px;
-            margin: 20px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-            transition: transform 0.3s, box-shadow 0.3s;
-            width: 50rem;
-        }
-            }
-        @media screen and (max-width:900px){
- 
-        .card {
-            backdrop-filter: blur(220px); 
-            border: 1px solid #30363d;
-            border-radius: 8px;
-            padding: 20px;
-            margin: 20px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-            transition: transform 0.3s, box-shadow 0.3s;
-            width: 50rem;
-        }
-            }
+    .project-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 20px;
+      gap: 20px;
+    }
 
-</style>
+    .card {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(12px);
+      border: 1px solid #00ffff55;
+      border-radius: 12px;
+      padding: 20px;
+      width: 300px;
+      transition: 0.3s;
+    }
 
+    .card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 10px 20px rgba(0, 255, 255, 0.2);
+    }
+
+    .card h3 {
+      color: #58f9ff;
+      margin-bottom: 10px;
+    }
+
+    .card p {
+      font-size: 0.9rem;
+      color: #d6faff;
+    }
+
+    .card a {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 8px 16px;
+      border: 1px solid #00ffff;
+      border-radius: 8px;
+      text-decoration: none;
+      color: white;
+      transition: 0.2s;
+    }
+
+    .card a:hover {
+      background-color: #00ffff;
+      color: #000;
+    }
+
+    /* Media Queries */
+    @media (max-width: 768px) {
+      header {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      nav ul {
+        justify-content: center;
+        padding: 10px 0;
+      }
+
+      .hero h2 {
+        font-size: 1.5rem;
+      }
+
+      .card {
+        width: 90%;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .hero h2 {
+        font-size: 1.2rem;
+      }
+
+      nav a {
+        font-size: 0.9rem;
+      }
+    }
+  </style>
 </head>
 <body>
-            <header>
-            <h1>Kanak Kumar</h1>
-                <nav>
-                    <ul>
-                    <li><a href="./index.html">Home</a></li>
-                    <li><a href="./kanak%20contact.html">Contact</a></li>
-                </ul>
-            </nav>
-            </header>
-            <main class="hero">
-                <div class="hero-content">
-                    <h1>Here Is Some Projects Made By Kanak Kumar</h1>
-                </div>
-            </main>
-            <main class="main1">
-            <section id="tools" class="card">
-                    <h2>Project 1</h2>
-                    <p>3D Hacker GLITCH MODE</p>
-                    <a href="./3d.html">Click Here</a>
-            </section>
-            <section id="tools" class="card">
-                    <h2>Project 2</h2>
-                    <p>Typing Speed</p>
-                    <a href="./hello.html">Click Here</a>
-            </section>
-                        <section id="tools" class="card">
-                    <h2>Project 3</h2>
-                    <p>Advanced Hacker Hub</p>
-                    <a href="./java.html">Click Here</a>
-            </section>
-            </main>     
-            <main>
-            <section id="tools" class="card">
-                    <h2>Project 4</h2>
-                    <p>kanak camera</p>
-                    <a href="./camera.html">Click Here</a>
-            </section>
-            <section id="tools" class="card">
-                    <h2>Project 5</h2>
-                    <p>Student and Teacher Login</p>
-                    <a href="./cute%20login%20page.html">Click Here</a>
-            </section>
-            <section id="tools" class="card">
-                    <h2>Project 6</h2>
-                    <p>Amazon-Style Login Page</p>
-                    <a href="./loginpage.html">Click Here</a>
-            </section>
-            </main>
-            <main>
-            <section id="tools" class="card">
-                    <h2>Project 7</h2>
-                    <p>Advanced Login</p>
-                    <a href="./login%20page%20basic%20%201%20.html">Click Here</a>
-            </section>
-            <section id="tools" class="card">
-                    <h2>Project 8</h2>
-                    <p>Kanak's HackShop</p>
-                    <a href="./power.html">Click Here</a>
-            </section>
-            <section id="tools" class="card">
-                    <h2>Project 9</h2>
-                    <p>Clock - Analog & Digital</p>
-                    <a href="./website.html">Click Here</a>
-            </section>
-            </main>
+
+<!-- Particles Background -->
+<div id="particles-js"></div>
+
+<header>
+  <h1>Kanak Kumar</h1>
+  <nav>
+    <ul>
+      <li><a href="./index.html">Home</a></li>
+      <li><a href="./kanak%20contact.html">Contact</a></li>
+    </ul>
+  </nav>
+</header>
+
+<section class="hero">
+  <h2>My Cool Projects</h2>
+</section>
+
+<div class="project-container">
+  <div class="card">
+    <h3>Project 1</h3>
+    <p>3D Hacker Glitch Mode</p>
+    <a href="./3d.html">View</a>
+  </div>
+  <div class="card">
+    <h3>Project 2</h3>
+    <p>Typing Speed Game</p>
+    <a href="./hello.html">View</a>
+  </div>
+  <div class="card">
+    <h3>Project 3</h3>
+    <p>Shopping Site</p>
+    <a href="./java.html">View</a>
+  </div>
+    <div class="card">
+    <h3>Project 4</h3>
+    <p>Shopping Site</p>
+    <a href="./camera.html">View</a>
+  </div>  <div class="card">
+    <h3>Project 5</h3>
+    <p>Shopping Site</p>
+    <a href="./cute%20login%20page.html">View</a>
+  </div>  <div class="card">
+    <h3>Project 6</h3>
+    <p>Shopping Site</p>
+    <a href="./loginpage.html">View</a>
+  </div>  <div class="card">
+    <h3>Project 7</h3>
+    <p>Shopping Site</p>
+    <a href="./login%20page%20basic%20%201%20.html">View</a>
+  </div>
+    <div class="card">
+    <h3>Project 8</h3>
+    <p>Shopping Site</p>
+    <a href="./power.html">View</a>
+  </div>
+    <div class="card">
+    <h3>Project 9</h3>
+    <p>Shopping Site</p>
+    <a href="./website.html">View</a>
+  </div>
+</div>
+
+<!-- Particle.js Library -->
+<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+<script>
+  particlesJS("particles-js", {
+    "particles": {
+      "number": { "value": 80 },
+      "color": { "value": "#00ffff" },
+      "shape": { "type": "circle" },
+      "opacity": { "value": 0.5 },
+      "size": { "value": 3 },
+      "line_linked": {
+        "enable": true,
+        "distance": 150,
+        "color": "#00ffff",
+        "opacity": 0.4,
+        "width": 1
+      },
+      "move": { "enable": true, "speed": 2 }
+    },
+    "interactivity": {
+      "events": {
+        "onhover": { "enable": true, "mode": "grab" },
+        "onclick": { "enable": true, "mode": "push" }
+      }
+    },
+    "retina_detect": true
+  });
+</script>
+
 </body>
 </html>
