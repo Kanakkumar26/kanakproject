@@ -1,140 +1,187 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Welcome To Kanak Kumar</title>
-	<style type="text/css">
-		body {
-    height: 100vh;
-    margin: 0;
-    margin: 0;
-    padding: 0;
-       background: radial-gradient(circle at center, rgba(130, 255, 255, 0.2) 0%, rgba(0, 0, 0, 0.8) 70%) no-repeat,
-                radial-gradient(circle at center, rgba(115, 220, 180, 0.2) 0%, rgba(0, 0, 0, 0.9) 80%) no-repeat,
-                radial-gradient(circle at center, rgba(160, 230, 255, 0.2) 0%, rgba(0, 0, 0, 1) 90%) no-repeat;
-    background-size: 200% 200%, 250% 250%, 300% 300%;
-    animation: pointerEffect 6s infinite alternate ease-in-out;
-}
-@keyframes pointerEffect {
-    0% { background-position: 0% 0%, 50% 50%, 100% 100%; }
-    25% { background-position: 100% 0%, 0% 100%, 50% 50%; }
-    50% { background-position: 100% 100%, 50% 50%, 0% 0%; } 
-    75% { background-position: 0% 100%, 100% 0%, 50% 50%; }
-    100% { background-position: 0% 0%, 50% 50%, 100% 100%; }
-}
-                header {
-            background: transparent;
-            padding: 20px 10%;
-            margin: 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-family: Algerian;
-            overflow: hidden;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Welcome To Kanak Kumar</title>
 
-        header h1 {
-            color:#aeb6bf;
-        }
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
 
-        nav ul {
-            list-style: none;
-            display: flex;
-        }
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-        nav ul li {
-            margin: 0 10px;
-        }
+    body {
+      font-family: 'Montserrat', sans-serif;
+      height: 100vh;
+      background-color: #0f2027;
+      overflow-x: hidden;
+      position: relative;
+      color: white;
+    }
 
-        nav ul li a {
-            text-decoration: none;
-            color: white;
-        }
-        nav a:hover {
-            color: #aeb6bf;
-        }
-        .hero {
-            background-color: transparent;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            padding: 10px;
-            color: #fff;
-        }
+    /* Particles.js container */
+    #particles-js {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    }
 
-        .hero-content {
-            margin-right: 1vh;
-            max-width: 900px;
-        }
-        .hero h1 {
-            font-size: 36px;
-            margin-bottom: 10px;
-            text-align: left;
-            color:#aeb6bf;
-            font-family: cooper black;
-        }
+    header {
+      padding: 20px 10%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: transparent;
+    }
 
-        .hero p {
-            font-size: 20px;
-            margin-bottom: 20px;
-            color:#aeb6bf;
-        }
-        .link a{
-        	display: inline-block;
-            margin-top: 60px;
-            color: white;
-            text-decoration: none;
-            padding: 10px 20px;
-            border: solid;
-            border-radius: 10px;
-            border-color: white;
-        }
-        @media screen and (max-width:800px){
-        header {
-            font-size: 8px;
-        }
-        .hero h1 {
-            font-size: 24px;
-            background-color: transparent;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            padding: 10px;
-            color: #fff;
-        }
-                .hero p {
-            font-size: 18px;
-            background-color: transparent;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            padding: 10px;
-            color: #fff;
-        }
-}
-	</style>
+    header h1 {
+      color: #f1faee;
+      font-weight: 700;
+      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: #ffffff;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+
+    nav a:hover {
+      color: #a8dadc;
+    }
+
+    .hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 60px 20px;
+      min-height: calc(100vh - 100px);
+    }
+
+    .hero h1 {
+      font-size: 40px;
+      color: #f1faee;
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+    }
+
+    .hero p {
+      font-size: 20px;
+      color: #a8dadc;
+      margin-bottom: 40px;
+    }
+
+    .link a {
+      display: inline-block;
+      padding: 12px 28px;
+      font-size: 16px;
+      font-weight: 600;
+      color: #fff;
+      border: 2px solid #ffffff;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+      text-decoration: none;
+    }
+
+    .link a:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+      transform: scale(1.05);
+    }
+
+    @media (max-width: 800px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+        font-size: 14px;
+      }
+
+      .hero h1 {
+        font-size: 28px;
+      }
+
+      .hero p {
+        font-size: 18px;
+      }
+
+      nav ul {
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 10px;
+      }
+    }
+  </style>
 </head>
 <body>
 
-<header>
-            <h1>Kanak Kumar</h1>
-                <nav>
-                    <ul>
-                    <li><a href="./kanak%20contact.html">Contact</a></li>
-                </ul>
-            </nav>
-            </header>
-            <main class="hero">
-                <div class="hero-content">
-                    <h1>Welcome to Kanak Kumar Website</h1>
-                    <p>Click link to Chack My Projects</p>
-                    <div class="link">
-                    <a href="./background%20custom.html"> click here</a>
-                </div>
-            </main>
+  <!-- Particles Background -->
+  <div id="particles-js"></div>
+
+  <!-- Header Section -->
+  <header>
+    <h1>Kanak Kumar</h1>
+    <nav>
+      <ul>
+        <li><a href="./kanak%20contact.html">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Hero Section -->
+  <main class="hero">
+    <div class="hero-content">
+      <h1>Welcome to Kanak Kumar Website</h1>
+      <p>Click the link below to check my projects</p>
+      <div class="link">
+        <a href="./background%20custom.html">Click here</a>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    particlesJS("particles-js", {
+      "particles": {
+        "number": { "value": 80 },
+        "color": { "value": "#ffffff" },
+        "shape": { "type": "circle" },
+        "opacity": { "value": 0.5 },
+        "size": { "value": 3 },
+        "line_linked": {
+          "enable": true,
+          "distance": 150,
+          "color": "#ffffff",
+          "opacity": 0.4,
+          "width": 1
+        },
+        "move": { "enable": true, "speed": 2 }
+      },
+      "interactivity": {
+        "events": {
+          "onhover": { "enable": true, "mode": "grab" },
+          "onclick": { "enable": true, "mode": "push" }
+        }
+      },
+      "retina_detect": true
+    });
+  </script>
+
 </body>
 </html>
