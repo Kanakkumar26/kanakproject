@@ -67,6 +67,79 @@
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
         }
+        /* Responsive styles */
+@media (max-width: 768px) {
+    .details {
+        width: 150px;
+        font-size: 14px;
+    }
+
+    .glitch-bg {
+        font-size: 20px;
+    }
+
+    .map-container {
+        width: 100px;
+        height: 100px;
+        bottom: 10px;
+        left: 10px;
+    }
+
+    .details.left,
+    .details.right {
+        top: auto;
+        bottom: 20px;
+        transform: none;
+    }
+
+    .details.left {
+        left: 10px;
+        bottom: 140px;
+    }
+
+    .details.right {
+        right: 10px;
+        bottom: 140px;
+    }
+
+    .details.top-left,
+    .details.top-right {
+        top: 10px;
+        font-size: 13px;
+    }
+
+    canvas {
+        display: block;
+    }
+}
+
+@media (max-width: 480px) {
+    .glitch-bg {
+        font-size: 16px;
+        text-align: center;
+        padding: 10px;
+    }
+
+    .details {
+        font-size: 12px;
+        width: 120px;
+    }
+
+    .map-container {
+        width: 80px;
+        height: 80px;
+        bottom: 10px;
+        left: 10px;
+    }
+
+    .details.left,
+    .details.right,
+    .details.top-left,
+    .details.top-right {
+        display: none; /* Hide some HUD elements for very small screens */
+    }
+}
+
     </style>
 </head>
 <body>

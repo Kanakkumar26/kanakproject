@@ -12,7 +12,6 @@
             font-family: 'Courier New', Courier, monospace;
             margin: 0;
             padding: 0;
-            overflow: hidden;
         }
 
         header {
@@ -48,7 +47,6 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 20px;
-            position: relative;
         }
 
         .card {
@@ -74,6 +72,15 @@
             line-height: 1.5;
         }
 
+        .media {
+            margin-top: 15px;
+        }
+
+        .media img, .media video, .media audio {
+            max-width: 100%;
+            border-radius: 5px;
+        }
+
         footer {
             background-color: #161b22;
             text-align: center;
@@ -86,97 +93,16 @@
             font-size: 0.9em;
         }
 
-        /* Hacker Animation */
-        @keyframes hackerRain {
-            0% {
-                transform: translateY(-100%);
+        @media (max-width: 600px) {
+            header h1 {
+                font-size: 1.8em;
             }
-            100% {
-                transform: translateY(100%);
+
+            nav a {
+                font-size: 1em;
             }
-        }
-
-        .matrix {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            z-index: -1;
-            opacity: 0.1;
-        }
-
-        .matrix span {
-            position: absolute;
-            color: #0f0;
-            font-size: 18px;
-            font-family: 'Courier New', Courier, monospace;
-            animation: hackerRain 5s linear infinite;
-        }
-
-        /* 3D Rotating Cube */
-        .cube-container {
-            position: absolute;
-            top: 80%;
-            left: 50px;
-            transform: translateY(-50%);
-            perspective: 1000px;
-        }
-
-        .cube {
-            width: 100px;
-            height: 100px;
-            position: relative;
-            transform-style: preserve-3d;
-            animation: rotateCube 6s infinite linear;
-        }
-
-        .cube div {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(45deg, #58a6ff, #ff6ec7);
-            border: 1px solid #30363d;
-            opacity: 0.2;
-        }
-
-        .cube .front  { transform: rotateY(  0deg) translateZ(50px); }
-        .cube .back   { transform: rotateY(180deg) translateZ(50px); }
-        .cube .right  { transform: rotateY( 90deg) translateZ(50px); }
-        .cube .left   { transform: rotateY(-90deg) translateZ(50px); }
-        .cube .top    { transform: rotateX( 90deg) translateZ(50px); }
-        .cube .bottom { transform: rotateX(-90deg) translateZ(50px); }
-
-        @keyframes rotateCube {
-            0% { transform: rotateX(0deg) rotateY(0deg); }
-            100% { transform: rotateX(360deg) rotateY(360deg); }
         }
     </style>
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const matrix = document.createElement('div');
-            matrix.classList.add('matrix');
-            document.body.appendChild(matrix);
-
-            const createRain = () => {
-                const width = window.innerWidth;
-                const height = window.innerHeight;
-
-                for (let i = 1; i < 480; i++) {
-                    const span = document.createElement('span');
-                    span.textContent = Math.random() > 0.1 ? '0' : '1';
-                    span.style.left = `${Math.random() * width}px`;
-                    span.style.animationDelay = `${Math.random() * 1}s`;
-                    span.style.animationDuration = `${Math.random() * 1 + 1}s`;
-                    span.style.top = `${Math.random() * height}px`;
-                    matrix.appendChild(span);
-                }
-            };
-
-            createRain();
-        });
-    </script>
 </head>
 <body>
     <header>
@@ -184,7 +110,7 @@
         <nav>
             <a href="#tools">Tools</a>
             <a href="#resources">Resources</a>
-            <a href="#news">News</a>
+            <a href="#media">Media</a>
             <a href="#about">About</a>
         </nav>
     </header>
@@ -192,35 +118,31 @@
     <main>
         <section id="tools" class="card">
             <h2>Hacking Tools</h2>
-            <p>Explore cutting-edge tools for penetration testing, network analysis, and more. Examples: Metasploit, Nmap, Wireshark.</p>
+            <p>Explore cutting-edge tools like Metasploit, Nmap, and Wireshark for penetration testing and analysis.</p>
         </section>
 
         <section id="resources" class="card">
             <h2>Learning Resources</h2>
-            <p>Access tutorials, guides, and forums to sharpen your skills. Examples: OWASP, Hack The Box, Cybrary.</p>
+            <p>Sharpen your skills with OWASP guides, Hack The Box challenges, and more.</p>
         </section>
 
-        <section id="news" class="card">
-            <h2>Security News</h2>
-            <p>Stay updated on the latest cybersecurity trends and threats. Examples: Krebs on Security, Threatpost.</p>
+        <section id="media" class="card">
+            <h2>Multimedia Zone</h2>
+            <div class="media">
+                <img src="https://via.placeholder.com/300x150?text=Hacker+Image" alt="Hacker Image">
+                <video controls src="https://www.w3schools.com/html/mov_bbb.mp4" style="margin-top: 10px;"></video>
+                <audio controls style="margin-top: 10px;">
+                    <source src="https://www.w3schools.com/html/horse.ogg" type="audio/ogg">
+                    Your browser does not support the audio element.
+                </audio>
+            </div>
         </section>
 
         <section id="about" class="card">
             <h2>About</h2>
-            <p>This hub is dedicated to ethical hacking, cybersecurity, and promoting secure practices across the web.</p>
+            <p>A hub dedicated to ethical hacking, real-world simulations, and cyber defense education.</p>
         </section>
     </main>
-
-    <div class="cube-container">
-        <div class="cube">
-            <div class="front"></div>
-            <div class="back"></div>
-            <div class="right"></div>
-            <div class="left"></div>
-            <div class="top"></div>
-            <div class="bottom"></div>
-        </div>
-    </div>
 
     <footer>
         <p>&copy; 2025 Advanced Hacker Hub. All rights reserved.</p>
