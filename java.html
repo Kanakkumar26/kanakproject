@@ -1,151 +1,267 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Advanced Hacker Hub - Tools, Resources, and News">
-    <title>Advanced Hacker Hub</title>
-    <style>
-        body {
-            background-color: #0d1117;
-            color: #c9d1d9;
-            font-family: 'Courier New', Courier, monospace;
-            margin: 0;
-            padding: 0;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ultimate Translator 🌍</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
 
-        header {
-            background-color: #161b22;
-            padding: 20px;
-            text-align: center;
-        }
+    h2 {
+      margin: 30px 0 20px;
+      color: #333;
+      animation: fadeInDown 1s ease;
+      font-size: 28px;
+    }
 
-        header h1 {
-            color: #58a6ff;
-            font-size: 2.5em;
-        }
+    .container {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      width: 95%;
+      max-width: 1200px;
+      padding: 20px;
+      flex-wrap: wrap;
+    }
 
-        nav {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-top: 10px;
-        }
+    .box {
+      flex: 1;
+      min-width: 320px;
+      max-width: 500px;
+      height: 350px;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 15px;
+      background: white;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
 
-        nav a {
-            color: #8b949e;
-            text-decoration: none;
-            font-size: 1.2em;
-        }
+    textarea {
+      flex-grow: 1;
+      width: 100%;
+      border: none;
+      outline: none;
+      font-size: 16px;
+      resize: none;
+      padding: 12px;
+      border-radius: 10px;
+      background: #fafafa;
+    }
 
-        nav a:hover {
-            color: #58a6ff;
-        }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      gap: 10px;
+    }
 
-        main {
-            padding: 20px;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-        }
+    select, input[type=file] {
+      flex: 1;
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
 
-        .card {
-            background-color: #21262d;
-            border: 1px solid #30363d;
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
+    button {
+      background: #4285F4;
+      color: white;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      margin-left: 5px;
+    }
 
-        .card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.3);
-        }
+    button:hover {
+      background: #357ae8;
+    }
 
-        .card h2 {
-            color: #58a6ff;
-            margin-bottom: 10px;
-        }
+    .actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
 
-        .card p {
-            line-height: 1.5;
-        }
+    #historyBox {
+      margin-top: 20px;
+      width: 90%;
+      max-width: 800px;
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 12px;
+      padding: 15px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      display: none;
+    }
 
-        .media {
-            margin-top: 15px;
-        }
+    #historyList {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      max-height: 200px;
+      overflow-y: auto;
+    }
 
-        .media img, .media video, .media audio {
-            max-width: 100%;
-            border-radius: 5px;
-        }
+    #historyList li {
+      padding: 6px;
+      border-bottom: 1px solid #eee;
+      font-size: 14px;
+    }
 
-        footer {
-            background-color: #161b22;
-            text-align: center;
-            padding: 10px;
-            margin-top: 20px;
-        }
+    #historyList li:last-child {
+      border-bottom: none;
+    }
 
-        footer p {
-            color: #8b949e;
-            font-size: 0.9em;
-        }
+    /* Responsive */
+    @media (max-width: 900px) {
+      .container { flex-direction: column; align-items: center; }
+      .box { width: 100%; max-width: 600px; height: 300px; }
+    }
 
-        @media (max-width: 600px) {
-            header h1 {
-                font-size: 1.8em;
-            }
-
-            nav a {
-                font-size: 1em;
-            }
-        }
-    </style>
+    @media (max-width: 600px) {
+      h2 { font-size: 22px; }
+      .box { height: 280px; }
+      textarea { font-size: 14px; padding: 10px; }
+    }
+  </style>
 </head>
 <body>
-    <header>
-        <h1>Advanced Hacker Hub</h1>
-        <nav>
-            <a href="#tools">Tools</a>
-            <a href="#resources">Resources</a>
-            <a href="#media">Media</a>
-            <a href="#about">About</a>
-        </nav>
-    </header>
+  <h2>🌐 Ultimate Translator</h2>
+  <div class="container">
+    <!-- Input Box -->
+    <div class="box">
+      <div class="header">
+        <select id="fromLang"></select>
+      </div>
+      <textarea id="inputText" placeholder="Type or upload text..."></textarea>
+      <input type="file" id="fileUpload" accept=".txt,.docx,image/*" onchange="handleFileUpload(event)">
+    </div>
 
-    <main>
-        <section id="tools" class="card">
-            <h2>Hacking Tools</h2>
-            <p>Explore cutting-edge tools like Metasploit, Nmap, and Wireshark for penetration testing and analysis.</p>
-        </section>
+    <!-- Output Box -->
+    <div class="box">
+      <div class="header">
+        <select id="toLang"></select>
+        <div class="actions">
+          <button onclick="translateText()">Translate</button>
+          <button onclick="speakText()">🔊</button>
+          <button onclick="toggleHistory()">📜 History</button>
+        </div>
+      </div>
+      <textarea id="outputText" placeholder="Translation" readonly></textarea>
+    </div>
+  </div>
 
-        <section id="resources" class="card">
-            <h2>Learning Resources</h2>
-            <p>Sharpen your skills with OWASP guides, Hack The Box challenges, and more.</p>
-        </section>
+  <!-- History Box -->
+  <div id="historyBox">
+    <h3>🕒 Translation History</h3>
+    <ul id="historyList"></ul>
+  </div>
 
-        <section id="media" class="card">
-            <h2>Multimedia Zone</h2>
-            <div class="media">
-                <img src="https://via.placeholder.com/300x150?text=Hacker+Image" alt="Hacker Image">
-                <video controls src="https://www.w3schools.com/html/mov_bbb.mp4" style="margin-top: 10px;"></video>
-                <audio controls style="margin-top: 10px;">
-                    <source src="https://www.w3schools.com/html/horse.ogg" type="audio/ogg">
-                    Your browser does not support the audio element.
-                </audio>
-            </div>
-        </section>
+  <!-- OCR library for image text extraction -->
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.0.2/dist/tesseract.min.js"></script>
 
-        <section id="about" class="card">
-            <h2>About</h2>
-            <p>A hub dedicated to ethical hacking, real-world simulations, and cyber defense education.</p>
-        </section>
-    </main>
+  <script>
+    // Language list
+    const languages = {
+      "en": "English", "hi": "Hindi", "ja": "Japanese", "fr": "French",
+      "es": "Spanish", "de": "German", "zh-CN": "Chinese (Simplified)",
+      "ar": "Arabic", "ru": "Russian", "pt": "Portuguese", "it": "Italian",
+      "ko": "Korean", "tr": "Turkish", "nl": "Dutch", "sv": "Swedish",
+      "pl": "Polish", "uk": "Ukrainian", "el": "Greek", "vi": "Vietnamese"
+    };
 
-    <footer>
-        <p>&copy; 2025 Advanced Hacker Hub. All rights reserved.</p>
-    </footer>
+    const fromSelect = document.getElementById("fromLang");
+    const toSelect = document.getElementById("toLang");
+
+    for (const code in languages) {
+      let opt1 = new Option(languages[code], code);
+      let opt2 = new Option(languages[code], code);
+      fromSelect.appendChild(opt1);
+      toSelect.appendChild(opt2);
+    }
+    fromSelect.value = "en";
+    toSelect.value = "hi";
+
+    async function translateText() {
+      const text = document.getElementById("inputText").value;
+      const fromLang = fromSelect.value;
+      const toLang = toSelect.value;
+
+      if (!text) { alert("Enter or upload text."); return; }
+
+      const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${fromLang}|${toLang}`;
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+        const translated = data.responseData.translatedText;
+        document.getElementById("outputText").value = translated;
+        saveHistory(text, translated, languages[fromLang], languages[toLang]);
+      } catch {
+        document.getElementById("outputText").value = "Error translating.";
+      }
+    }
+
+    function speakText() {
+      const text = document.getElementById("outputText").value;
+      const lang = toSelect.value;
+      if (!text) return;
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = lang;
+      window.speechSynthesis.speak(utterance);
+    }
+
+    function saveHistory(input, output, from, to) {
+      let history = JSON.parse(localStorage.getItem("translationHistory")) || [];
+      history.unshift(`${from} → ${to}: "${input}" ➝ "${output}"`);
+      if (history.length > 20) history.pop(); // keep last 20
+      localStorage.setItem("translationHistory", JSON.stringify(history));
+    }
+
+    function toggleHistory() {
+      const box = document.getElementById("historyBox");
+      const list = document.getElementById("historyList");
+      list.innerHTML = "";
+      let history = JSON.parse(localStorage.getItem("translationHistory")) || [];
+      history.forEach(h => {
+        let li = document.createElement("li");
+        li.textContent = h;
+        list.appendChild(li);
+      });
+      box.style.display = box.style.display === "none" ? "block" : "none";
+    }
+
+    async function handleFileUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      if (file.type.startsWith("text/")) {
+        const text = await file.text();
+        document.getElementById("inputText").value = text;
+      } 
+      else if (file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
+        alert("DOCX parsing requires backend or library support.");
+      }
+      else if (file.type.startsWith("image/")) {
+        Tesseract.recognize(file, 'eng').then(({ data: { text } }) => {
+          document.getElementById("inputText").value = text.trim();
+        });
+      }
+    }
+  </script>
 </body>
 </html>
