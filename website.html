@@ -1,212 +1,161 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clock - Analog & Digital</title>
-    <style type="text/css">
-        * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    background-color: #0a0a0a;
-    font-family: 'Courier New', Courier, monospace;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    color: #fff;
-    overflow: hidden;
-    position: relative;
-}
-
-.background {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(45deg, #0a0a0a, #2a2a2a, #444444);
-    background-size: 400% 400%;
-    animation: gradientMove 6s ease infinite;
-}
-
-@keyframes gradientMove {
-    0% {
-        background-position: 0% 50%;
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart Animated Clock</title>
+  <style>
+    :root {
+      --bg: #0f1220;
+      --card: rgba(255,255,255,0.08);
+      --accent: #7cf3ff;
+      --text: #ffffff;
+      --muted: rgba(255,255,255,0.6);
     }
-    50% {
-        background-position: 100% 50%;
+
+    * { box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
+
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at top, #1b1f3b, var(--bg));
+      color: var(--text);
+      overflow: hidden;
+      transition: background 0.5s;
     }
-    100% {
-        background-position: 0% 50%;
+
+    .clock-card {
+      width: 360px;
+      padding: 24px;
+      border-radius: 24px;
+      background: var(--card);
+      backdrop-filter: blur(16px);
+      box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+      animation: float 6s ease-in-out infinite;
     }
-}
 
-.watch-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 800px;
-    height: 400px;
-    background-color: rgba(34, 34, 34, 0.8);
-    border-radius: 20px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
-    padding: 40px;
-    text-align: center;
-    z-index: 2;
-}
-
-.analog-clock {
-    width: 250px;
-    height: 250px;
-    border-radius: 50%;
-    background: linear-gradient(145deg, #333, #111);
-    position: relative;
-    box-shadow: 0 0 20px rgba(0, 255, 0, 0.8);
-}
-
-.clock-face {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 100%;
-    height: 100%;
-    transform: translate(-50%, -50%);
-    position: relative;
-}
-
-.hour-hand, .minute-hand, .second-hand {
-    position: absolute;
-    bottom: 50%;
-    left: 50%;
-    transform-origin: 50% 100%;
-    transition-timing-function: steps(1);
-}
-
-.hour-hand {
-    width: 6px;
-    height: 50px;
-    background: #fff;
-    border-radius: 6px;
-    transform: translateX(-50%) translateY(10px) rotate(90deg);
-}
-
-.minute-hand {
-    width: 4px;
-    height: 70px;
-    background: #aaa;
-    border-radius: 4px;
-    transform: translateX(-50%) translateY(10px);
-}
-
-.second-hand {
-    width: 2px;
-    height: 80px;
-    background: red;
-    border-radius: 2px;
-    transform: translateX(-50%) translateY(10px);
-}
-
-.digital-display {
-    font-size: 60px;
-    font-weight: bold;
-    letter-spacing: 2px;
-    color: #00ff00;
-    background: linear-gradient(145deg, #2e2e2e, #0a0a0a);
-    border: 2px solid #0f0f0f;
-    padding: 20px;
-    border-radius: 15px;
-    box-shadow: 0 0 10px rgba(0, 255, 0, 0.6);
-    transform: rotateY(10deg);
-    animation: fadeIn 0.5s ease-in-out infinite alternate, glitch 1.5s infinite alternate;
-    margin-left: 30px;
-}
-
-@keyframes fadeIn {
-    0% {
-        opacity: 0.5;
-        transform: rotateY(10deg);
+    @keyframes float {
+      0%,100%{transform:translateY(0)}
+      50%{transform:translateY(-12px)}
     }
-    100% {
-        opacity: 1;
-        transform: rotateY(0deg);
-    }
-}
 
-@keyframes glitch {
-    0% {
-        text-shadow: 2px 0 red, -2px 0 cyan;
-    }
-    50% {
-        text-shadow: -2px 0 red, 2px 0 cyan;
-    }
-    100% {
-        text-shadow: 2px 0 red, -2px 0 cyan;
-    }
-}
+    .digital{text-align:center;margin-bottom:20px}
+    .time{font-size:46px;font-weight:700}
+    .seconds{font-size:20px;color:var(--accent);margin-left:6px}
+    .date{font-size:14px;color:var(--muted)}
 
-#time {
-    display: inline-block;
-}
+    .analog{width:220px;height:220px;margin:0 auto;border-radius:50%;position:relative;background:radial-gradient(circle,rgba(255,255,255,.15),rgba(255,255,255,.03));box-shadow:inset 0 0 20px rgba(0,0,0,.6)}
+    .center-dot{position:absolute;width:10px;height:10px;background:var(--accent);border-radius:50%;top:50%;left:50%;transform:translate(-50%,-50%);z-index:10}
+    .hand{position:absolute;width:50%;height:2px;background:white;top:50%;left:50%;transform-origin:left center}
+    .hour{width:35%;height:4px}
+    .minute{width:45%;height:3px}
+    .second{background:var(--accent)}
 
-    </style>
+    .tick{position:absolute;width:2px;height:8px;background:rgba(255,255,255,.5);top:6px;left:50%;transform-origin:center 104px}
+
+    .settings{
+      position:fixed;
+      bottom:20px;
+      right:20px;
+      background:var(--card);
+      backdrop-filter:blur(14px);
+      border-radius:16px;
+      padding:14px;
+      width:220px;
+      box-shadow:0 20px 40px rgba(0,0,0,.4)
+    }
+
+    .settings h3{margin:0 0 10px;font-size:14px}
+    .settings label{font-size:12px;display:block;margin-top:8px}
+    .settings input, .settings select{width:100%;margin-top:4px}
+  </style>
 </head>
 <body>
-    <div class="background"></div>
-    <div class="watch-container">
-        <!-- Analog clock section -->
-        <div class="analog-clock">
-            <div class="clock-face">
-                <div class="hour-hand"></div>
-                <div class="minute-hand"></div>
-                <div class="second-hand"></div>
-            </div>
-        </div>
-        
-        <!-- Digital clock section -->
-        <div class="digital-display">
-            <div class="time" id="time">00:00:00</div>
-        </div>
-    </div>
-</body>
-</html>
-<script type="text/javascript">
-    function updateClock() {
-    const hourHand = document.querySelector('.hour-hand');
-    const minuteHand = document.querySelector('.minute-hand');
-    const secondHand = document.querySelector('.second-hand');
-    const timeElement = document.getElementById('time');
-    
-    // Get current time
-    const now = new Date();
-    let hours = now.getHours();
-    let minutes = now.getMinutes();
-    let seconds = now.getSeconds();
 
-    // Format the time to always show two digits
-    hours = hours < 10 ? '0' + hours : hours;
-    minutes = minutes < 10 ? '0' + minutes : minutes;
-    seconds = seconds < 10 ? '0' + seconds : seconds;
+<div class="clock-card">
+  <div class="digital" id="digital">
+    <div class="time"><span id="hours">00</span>:<span id="minutes">00</span><span class="seconds" id="seconds">00</span></div>
+    <div class="date" id="date"></div>
+  </div>
+  <div class="analog" id="analog">
+    <div class="hand hour" id="hourHand"></div>
+    <div class="hand minute" id="minuteHand"></div>
+    <div class="hand second" id="secondHand"></div>
+    <div class="center-dot"></div>
+  </div>
+</div>
 
-    // Set the digital clock time
-    timeElement.textContent = `${hours}:${minutes}:${seconds}`;
+<div class="settings">
+  <h3>⚙️ Settings</h3>
 
-    // Set the analog clock hands based on current time
-    const hourDeg = (360 / 12) * hours + (360 / 12) * (minutes / 60);
-    const minuteDeg = (360 / 60) * minutes + (360 / 60) * (seconds / 60);
-    const secondDeg = (360 / 60) * seconds;
+  <label>Theme</label>
+  <select id="theme">
+    <option value="dark">Dark</option>
+    <option value="light">Light</option>
+    <option value="neon">Neon</option>
+  </select>
 
-    hourHand.style.transform = `translateX(-50%) translateY(10px) rotate(${90 + hourDeg}deg)`;
-    minuteHand.style.transform = `translateX(-50%) translateY(10px) rotate(${90 + minuteDeg}deg)`;
-    secondHand.style.transform = `translateX(-50%) translateY(10px) rotate(${90 + secondDeg}deg)`;
+  <label>Accent Color</label>
+  <input type="color" id="accent" value="#7cf3ff" />
+
+  <label>Time Format</label>
+  <select id="format">
+    <option value="24">24 Hour</option>
+    <option value="12">12 Hour</option>
+  </select>
+
+  <label><input type="checkbox" id="showAnalog" checked /> Show Analog</label>
+  <label><input type="checkbox" id="showDigital" checked /> Show Digital</label>
+</div>
+
+<script>
+const hEl=hours,mEl=minutes,sEl=seconds,dEl=date;
+const hH=hourHand,mH=minuteHand,sH=secondHand;
+const analog=document.getElementById('analog');
+
+for(let i=0;i<60;i++){const t=document.createElement('div');t.className='tick';t.style.transform=`rotate(${i*6}deg)`;t.style.height=i%5?"8px":"14px";analog.appendChild(t)}
+
+let format=24;
+
+function update(){
+  const n=new Date();
+  let h=n.getHours();
+  const m=n.getMinutes(),s=n.getSeconds();
+
+  if(format===12){h=h%12||12}
+
+  hEl.textContent=String(h).padStart(2,'0');
+  mEl.textContent=String(m).padStart(2,'0');
+  sEl.textContent=String(s).padStart(2,'0');
+
+  dEl.textContent=n.toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'})
+
+  hH.style.transform=`rotate(${(n.getHours()%12)*30+m*0.5}deg)`;
+  mH.style.transform=`rotate(${m*6+s*0.1}deg)`;
+  sH.style.transform=`rotate(${s*6}deg)`;
 }
 
-// Update every second
-setInterval(updateClock, 1000);
-updateClock(); // Initial call to display the time immediately
+setInterval(update,1000);update();
 
+// SETTINGS
+
+document.getElementById('accent').oninput=e=>document.documentElement.style.setProperty('--accent',e.target.value);
+
+document.getElementById('format').onchange=e=>format=Number(e.target.value);
+
+document.getElementById('showAnalog').onchange=e=>analog.style.display=e.target.checked?'block':'none';
+
+document.getElementById('showDigital').onchange=e=>digital.style.display=e.target.checked?'block':'none';
+
+document.getElementById('theme').onchange=e=>{
+  const t=e.target.value;
+  if(t==='light')document.body.style.background='linear-gradient(#f5f5f5,#ddd)';
+  if(t==='dark')document.body.style.background='radial-gradient(circle at top,#1b1f3b,#0f1220)';
+  if(t==='neon')document.body.style.background='radial-gradient(circle at top,#0ff,#020024)';
+};
 </script>
+</body>
+</html>
